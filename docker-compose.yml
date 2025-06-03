@@ -1,0 +1,11 @@
+services:
+  ### Web #########
+  web:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/web/Dockerfile
+      args:
+        TZ: '${TZ}'
+    ports:
+      - '80:80'
+      - '443:443'
