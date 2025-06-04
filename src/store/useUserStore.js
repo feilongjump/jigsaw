@@ -7,13 +7,13 @@ const useUserStore = create(
     set => ({
       user: null,
       setUser: user => set({ user }),
-      logoutStore: () => set({ user: null }),
       loginStore: async (userAuthCreds) => {
         return loginAPI(userAuthCreds)
           .then((user) => {
             set({ user })
           })
       },
+      signOutStore: () => set({ user: null }),
       signUpStore: async (userAuthCreds) => {
         return signUpAPI(userAuthCreds)
           .then((user) => {

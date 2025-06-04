@@ -1,24 +1,48 @@
-import { Button, Image, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle } from '@heroui/react'
-import { useLocation } from '@tanstack/react-router'
+import { addToast, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle } from '@heroui/react'
+import { useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
+import AvatarJPG from '@/assets/avatar.jpg'
 import useUserStore from '@/store/useUserStore'
 
-function Logo() {
+function AuthComp({ user, signOut }) {
+  if (user) {
+    return (
+      <Dropdown>
+        <DropdownTrigger>
+          <Image
+            className="cursor-pointer"
+            src={user.avatar || AvatarJPG}
+            width={32}
+          />
+        </DropdownTrigger>
+        <DropdownMenu variant="faded">
+          <DropdownItem key="sign-out" className="text-danger" color="danger" onPress={signOut}>
+            Sign out
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+    )
+  }
+
   return (
-    <Image
-      src="/logo.png"
-      radius="none"
-      width={24}
-    />
+    <>
+      <NavbarItem className="hidden lg:flex">
+        <Link href="/auth/login">Login</Link>
+      </NavbarItem>
+      <NavbarItem>
+        <Button as={Link} color="primary" href="/auth/signup" variant="flat">
+          Sign Up
+        </Button>
+      </NavbarItem>
+    </>
   )
 }
 
 export default function App() {
+  const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const user = useUserStore()
-  const location = useLocation()
+  const { user, signOutStore } = useUserStore()
   const appTitle = import.meta.env.VITE_APP_TITLE
-
   const menus = [
     {
       title: '博客',
@@ -38,6 +62,16 @@ export default function App() {
     },
   ]
 
+  const signOut = () => {
+    signOutStore()
+    addToast({
+      description: '下次见！',
+      color: 'primary',
+    })
+
+    router.history.push('/auth/login')
+  }
+
   return (
     <Navbar
       shouldHideOnScroll
@@ -51,15 +85,15 @@ export default function App() {
           className="flex gap-x-2"
           href="/"
         >
-          <Logo />
+          <Image src="/logo.png" radius="none" width={24} />
           <p className="font-bold text-foreground">{appTitle}</p>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {menus.map(menu => (
-          <NavbarItem key={menu.link} isActive={menu.link === location.href}>
+          <NavbarItem key={menu.link} isActive={menu.link === router.href}>
             <Link
-              color={menu.link === location.href ? 'primary' : 'foreground'}
+              color={menu.link === router.href ? 'primary' : 'foreground'}
               href={menu.link}
             >
               {menu.title}
@@ -72,21 +106,14 @@ export default function App() {
           className="sm:hidden"
         />
 
-        <NavbarItem className="hidden lg:flex">
-          <Link href="/auth/login">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="/auth/signup" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        <AuthComp user={user} signOut={signOut} />
       </NavbarContent>
       <NavbarMenu>
         {menus.map(menu => (
-          <NavbarMenuItem key={menu.link} isActive={menu.link === location.href}>
+          <NavbarMenuItem key={menu.link} isActive={menu.link === router.href}>
             <Link
               className="w-full"
-              color={menu.link === location.href ? 'primary' : 'foreground'}
+              color={menu.link === router.href ? 'primary' : 'foreground'}
               href={menu.link}
               size="lg"
               onPress={() => setIsMenuOpen(false)}
