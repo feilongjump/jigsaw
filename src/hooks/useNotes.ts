@@ -1,4 +1,5 @@
-import { useNotesContext } from '@/contexts/NotesContext';
-export { type Note } from '@/contexts/NotesContext';
+import { useNotesContext } from '@/contexts/NotesContext'
 
-export const useNotes = useNotesContext;
+export { type Note } from '@/contexts/NotesContext'
+
+export const useNotes = useNotesContext

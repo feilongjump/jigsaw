@@ -1,8 +1,8 @@
 {
   "name": "jigsaw",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.3",
+    "@eslint-react/eslint-plugin": "^2.6.0",
     "@eslint/js": "^9.39.2",
     "@tanstack/router-plugin": "^1.149.0",
     "@types/node": "^24.10.7",

@@ -1,7 +1,8 @@
+import type { NavigateOptions } from '@tanstack/react-router'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
-import { createRouter, RouterProvider, type NavigateOptions } from '@tanstack/react-router'
-import { routeTree } from './routeTree.gen'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { AuthProvider } from './contexts/AuthContext'
+import { routeTree } from './routeTree.gen'
 
 // 创建新的路由实例
 const router = createRouter({
@@ -19,9 +20,9 @@ export default function Provider() {
       useHref={to => router.buildLocation({ to }).href}
     >
       <ToastProvider toastProps={{
-        radius: "lg",
+        radius: 'lg',
         timeout: 2500,
-        }}
+      }}
       />
       <AuthProvider>
         <RouterProvider router={router} />
