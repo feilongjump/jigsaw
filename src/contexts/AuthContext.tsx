@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { addToast } from '@heroui/toast'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, use, useEffect, useState } from 'react'
 import { changePassword as changePasswordApi, getUserInfo, login as loginApi, register as registerApi, updateAvatar as updateAvatarApi } from '@/services/authService'
 
 import { getStaticUrl } from '@/utils/url'
