@@ -47,11 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      // 尝试获取最新用户信息
-      fetchUserInfo()
+    const init = async () => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        // 尝试获取最新用户信息
+        await fetchUserInfo()
+      }
     }
+    init()
   }, [])
 
   const login = async (username: string, password: string) => {

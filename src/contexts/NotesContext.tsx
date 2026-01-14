@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { addToast } from '@heroui/toast'
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
-import { createNote, deleteNote as deleteNoteApi, getNote as getNoteApi, getNotes, updateNote as updateNoteApi } from '@/services/noteService'
+import { createNote, deleteNote as deleteNoteApi, getNote as getNoteApi, getNotes, pinNote as pinNoteApi, updateNote as updateNoteApi } from '@/services/noteService'
 
 export interface Note {
   id: number
@@ -11,6 +11,7 @@ export interface Note {
   updated_at?: string
   tags?: string[]
   images?: string[]
+  pinned_at?: string | null
 }
 
 interface NotesContextType {
@@ -18,14 +19,17 @@ interface NotesContextType {
   addNote: (content: string, fileIds?: number[]) => Promise<void>
   updateNote: (id: number, content: string) => Promise<void>
   deleteNote: (id: number) => Promise<void>
+  pinNote: (id: number, pinned: boolean) => Promise<void>
   getNote: (id: number) => Note | undefined
   fetchNote: (id: number) => Promise<Note | undefined>
+  refreshNotes: (params?: { keyword?: string }) => Promise<void>
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined)
 
 export function NotesProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<Note[]>([])
+  const [currentKeyword, setCurrentKeyword] = useState<string>('')
 
   // 从后端获取单条笔记
   const fetchNote = useCallback(async (id: number): Promise<Note | undefined> => {
@@ -49,6 +53,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
           updated_at: n.updated_at,
           tags: n.tags || [],
           images: n.images || [],
+          pinned_at: n.pinned_at,
         }
         return note
       }
@@ -59,9 +64,13 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     return undefined
   }, [notes]) // 依赖 notes，因为用到了 notes.find
 
-  const refreshNotes = useCallback(async () => {
+  const refreshNotes = useCallback(async (params?: { keyword?: string }) => {
     try {
-      const res = await getNotes({ page: 1, size: 10 })
+      const keyword = params?.keyword !== undefined ? params.keyword : currentKeyword
+      if (params?.keyword !== undefined)
+        setCurrentKeyword(params.keyword)
+
+      const res = await getNotes({ page: 1, size: 10, keyword })
       if (res.code === 0 && res.data && res.data.data) {
         const mappedNotes = res.data.data.map((n: any) => ({
           id: n.id,
@@ -71,6 +80,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
           updated_at: n.updated_at,
           tags: n.tags || [],
           images: n.images || [],
+          pinned_at: n.pinned_at,
         }))
         setNotes(mappedNotes)
       }
@@ -79,10 +89,13 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       console.error('获取笔记失败', error)
       addToast({ title: '获取笔记失败', color: 'danger' })
     }
-  }, [])
+  }, [currentKeyword])
 
   useEffect(() => {
-    refreshNotes()
+    const init = async () => {
+      await refreshNotes()
+    }
+    init()
   }, [refreshNotes])
 
   const addNote = useCallback(async (content: string, fileIds?: number[]) => {
@@ -121,6 +134,18 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }
   }, [refreshNotes])
 
+  const pinNote = useCallback(async (id: number, pinned: boolean) => {
+    try {
+      await pinNoteApi(id, pinned)
+      addToast({ title: pinned ? '置顶成功' : '取消置顶成功', color: 'success' })
+      await refreshNotes()
+    }
+    catch (e) {
+      addToast({ title: '操作失败', color: 'danger' })
+      throw e
+    }
+  }, [refreshNotes])
+
   const getNote = useCallback((id: number) => notes.find(n => n.id === id), [notes])
 
   const value = useMemo(() => ({
@@ -128,9 +153,11 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     addNote,
     updateNote,
     deleteNote,
+    pinNote,
     getNote,
     fetchNote,
-  }), [notes, addNote, updateNote, deleteNote, getNote, fetchNote])
+    refreshNotes,
+  }), [notes, addNote, updateNote, deleteNote, pinNote, getNote, fetchNote, refreshNotes])
 
   return (
     <NotesContext value={value}>

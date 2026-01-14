@@ -2,7 +2,7 @@ import type { ApiResponse, Note, NoteList } from '@/types/api'
 import request from '@/utils/request'
 
 // 获取笔记列表
-export function getNotes(params?: { page?: number, size?: number }): Promise<ApiResponse<NoteList>> {
+export function getNotes(params?: { page?: number, size?: number, keyword?: string }): Promise<ApiResponse<NoteList>> {
   return request.get('/notes', { params })
 }
 
@@ -24,4 +24,9 @@ export function updateNote(id: number | string, data: { content: string }): Prom
 // 删除笔记
 export function deleteNote(id: number | string): Promise<ApiResponse> {
   return request.delete(`/notes/${id}`)
+}
+
+// 置顶/取消置顶笔记
+export function pinNote(id: number | string, pinned: boolean): Promise<ApiResponse<Note>> {
+  return request.patch(`/notes/${id}/pin`, { pinned })
 }

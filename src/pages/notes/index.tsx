@@ -13,7 +13,7 @@ export const Route = createFileRoute('/notes/')({
   component: NotesPage,
 })
 
-const NoteItem = memo(({ note, onDelete }: { note: Note, onDelete: (id: number) => void }) => {
+const NoteItem = memo(({ note, onDelete, onPin }: { note: Note, onDelete: (id: number) => void, onPin: (id: number, pinned: boolean) => void }) => {
   const navigate = useNavigate()
   const [isExpanded, setIsExpanded] = useState(false)
   const [showExpandBtn, setShowExpandBtn] = useState(false)
@@ -51,8 +51,8 @@ const NoteItem = memo(({ note, onDelete }: { note: Note, onDelete: (id: number) 
           )}
           {(note.tags && note.tags.length > 0) && (
             <div className="flex gap-2">
-              {note.tags.map((tag: string, idx: number) => (
-                <span key={idx} className="text-[#0984E3] bg-[#0984E3]/10 px-2 py-0.5 rounded-md text-xs whitespace-nowrap">
+              {note.tags.map((tag: string) => (
+                <span key={tag} className="text-[#0984E3] bg-[#0984E3]/10 px-2 py-0.5 rounded-md text-xs whitespace-nowrap">
                   #
                   {tag}
                 </span>
@@ -63,6 +63,15 @@ const NoteItem = memo(({ note, onDelete }: { note: Note, onDelete: (id: number) 
 
         {/* 移动端默认显示，桌面端 hover 显示 */}
         <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+          <button
+            className={`p-1.5 rounded-full hover:bg-black/5 transition-colors ${note.pinned_at ? 'text-[#0984E3] bg-[#0984E3]/10' : 'text-[#636E72]'}`}
+            onClick={() => onPin(note.id, !note.pinned_at)}
+            title={note.pinned_at ? '取消置顶' : '置顶'}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z" fill={note.pinned_at ? 'currentColor' : 'none'} />
+            </svg>
+          </button>
           <button
             className="p-1.5 rounded-full hover:bg-black/5 text-[#636E72] transition-colors"
             onClick={() => navigate({ to: '/notes/edit', search: { id: note.id } })}
@@ -98,7 +107,7 @@ const NoteItem = memo(({ note, onDelete }: { note: Note, onDelete: (id: number) 
         {hasImage && (
           <div className="mt-4 grid grid-cols-2 gap-4">
             {note.images!.map((img, idx) => (
-              <div key={idx} className="rounded-xl overflow-hidden border border-black/5">
+              <div key={`${img}-${idx}`} className="rounded-xl overflow-hidden border border-black/5">
                 <img src={getStaticUrl(img)} alt="attachment" className="w-full h-auto object-cover" />
               </div>
             ))}
@@ -144,12 +153,21 @@ const NoteItem = memo(({ note, onDelete }: { note: Note, onDelete: (id: number) 
 })
 
 function NotesPage() {
-  const { notes, deleteNote } = useNotes()
+  const { notes, deleteNote, pinNote, refreshNotes } = useNotes()
   const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [deleteId, setDeleteId] = useState<number | null>(null)
+
+  // 搜索防抖
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      refreshNotes({ keyword: searchTerm })
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm, refreshNotes])
 
   const getGreeting = () => {
     const hour = new Date().getHours()
@@ -179,13 +197,9 @@ function NotesPage() {
   }
 
   const filteredNotes = notes.filter((note: Note) => {
-    const matchesSearch = note.title.toLowerCase().includes(searchTerm.toLowerCase())
-      || note.content.toLowerCase().includes(searchTerm.toLowerCase())
-      || note.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-
+    // 搜索逻辑已移至服务端，这里仅保留客户端的 Tag 筛选
     const matchesTag = selectedTag ? note.tags?.includes(selectedTag) : true
-
-    return matchesSearch && matchesTag
+    return matchesTag
   })
 
   return (
@@ -202,7 +216,11 @@ function NotesPage() {
                 <Button color="default" variant="light" onPress={onClose}>
                   取消
                 </Button>
-                <Button color="danger" onPress={() => { handleDeleteAction(); onClose() }}>
+                <Button color="danger" onPress={() => {
+                  handleDeleteAction()
+                  onClose()
+                }}
+                >
                   删除
                 </Button>
               </ModalFooter>
@@ -288,7 +306,7 @@ function NotesPage() {
         {/* 笔记列表 */}
         <div className="flex flex-col gap-8 pb-10">
           {filteredNotes.map((note: Note) => (
-            <NoteItem key={note.id} note={note} onDelete={confirmDelete} />
+            <NoteItem key={note.id} note={note} onDelete={confirmDelete} onPin={pinNote} />
           ))}
         </div>
       </main>
