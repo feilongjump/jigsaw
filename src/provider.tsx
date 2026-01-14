@@ -3,11 +3,11 @@ import { createRouter, RouterProvider, type NavigateOptions } from '@tanstack/re
 import { routeTree } from './routeTree.gen'
 import { AuthProvider } from './contexts/AuthContext'
 
-// Create a new router instance
+// 创建新的路由实例
 const router = createRouter({
   routeTree,
   context: {
-    auth: undefined!, // We'll inject this if we use router context, but for now we use global guard
+    auth: undefined!, // 如果使用路由上下文，我们将注入此内容，但目前我们使用全局守卫
   },
 })
 

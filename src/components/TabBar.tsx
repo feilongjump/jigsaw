@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export function TabBar() {
   const location = useLocation();
   const isProfile = location.pathname.includes('/profile');
-  const isNotes = location.pathname.includes('/notes') || location.pathname === '/'; // Default to notes for root too
+  const isNotes = location.pathname.includes('/notes') || location.pathname === '/'; // 根路径也默认显示笔记
 
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[120px] h-[50px] rounded-full z-50 flex justify-around items-center px-1
@@ -15,7 +15,7 @@ export function TabBar() {
         shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]
     ">
       
-      {/* Active Indicator Blob */}
+      {/* 选中状态指示器 */}
       <div className="absolute inset-0 flex justify-around items-center pointer-events-none px-1">
         <div className="w-1/2 flex justify-center">
             {isNotes && (

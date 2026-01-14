@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Header } from '@/components/Header'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRef } from 'react'
-import { addToast } from "@heroui/toast"
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,

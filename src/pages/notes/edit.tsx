@@ -24,7 +24,7 @@ import { getRelativePath } from '@/utils/url';
 
 function EditorPage() {
   const { id } = Route.useSearch();
-  const { fetchNote, addNote, updateNote } = useNotes();
+  const { addNote, updateNote } = useNotes();
   const navigate = useNavigate();
   
   const [content, setContent] = useState('');
@@ -122,21 +122,6 @@ function EditorPage() {
         await addNote(content, fileIds);
     }
     navigate({ to: '/notes' });
-  };
-
-  const handleAddTag = () => {
-      if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-          setTags([...tags, tagInput.trim()]);
-          setTagInput('');
-      }
-  };
-
-  const handleAddImage = () => {
-      if (imageInput.trim()) {
-          setImages([...images, imageInput.trim()]);
-          setImageInput('');
-          setShowImageInput(false);
-      }
   };
 
   return (

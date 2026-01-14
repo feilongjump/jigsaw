@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import Vditor from 'vditor';
 import 'vditor/dist/index.css';
 import { getStaticUrl } from '@/utils/url';
 
@@ -13,8 +12,8 @@ export function VditorPreview({ markdown, className }: VditorPreviewProps) {
 
   useEffect(() => {
     if (previewRef.current) {
-      // Process markdown to ensure image URLs are correct
-      const processedMarkdown = markdown.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      // 处理 Markdown 以确保图片 URL 正确
+      const processedMarkdown = markdown.replace(/!\[(.*?)\]\((.*?)\)/g, (_match, alt, url) => {
           return `![${alt}](${getStaticUrl(url)})`;
       });
 
