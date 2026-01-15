@@ -9,7 +9,7 @@ export const Route = createRootRoute({
       return
     }
 
-    const isAuthenticated = !!localStorage.getItem('me')
+    const isAuthenticated = !!localStorage.getItem('user_info')
     if (!isAuthenticated) {
       addToast({ title: '请先登录', color: 'danger' })
       throw redirect({

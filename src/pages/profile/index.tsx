@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useRef } from 'react'
-import { Header } from '@/components/Header'
+import { useMemo, useRef } from 'react'
+import { FiLogOut, FiCamera, FiLock, FiChevronRight } from 'react-icons/fi'
+import { fromNow } from '@/utils/date'
 import { useAuth } from '@/contexts/AuthContext'
+import bgProfile from '@/assets/bg-profile.png'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -11,6 +13,12 @@ function ProfilePage() {
   const { user, logout, updateAvatar } = useAuth()
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const joinedAt = useMemo(() => {
+    if (!user?.created_at)
+      return '刚刚'
+    return fromNow(user.created_at)
+  }, [user?.created_at])
 
   const handleLogout = () => {
     logout()
@@ -31,75 +39,90 @@ function ProfilePage() {
     }
     catch (error) {
       console.error('上传头像失败', error)
-      // 错误提示已在 context 中处理
     }
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full relative overflow-hidden">
-      <div className="relative z-10 flex flex-col h-full">
-        <Header showAvatar={false} />
+    <div className="min-h-screen bg-gray-50 font-sans pb-20">
+      {/* Header Background */}
+      <div className="h-72 w-full relative overflow-hidden">
+        <img
+          src={bgProfile}
+          alt="Profile Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-        <main className="flex-1 overflow-y-auto px-5 pb-[120px] no-scrollbar">
-          <div className="flex flex-col items-center py-10">
-            <div
-              className="relative w-[100px] h-[100px] mb-4 cursor-pointer group"
-              onClick={handleAvatarClick}
-            >
-              <div className="absolute -inset-1.5 rounded-full bg-[#0984E3] opacity-30 blur-[10px] z-0"></div>
-              <img
-                src={user?.avatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.username || `User`}`}
-                alt="Avatar"
-                className="w-full h-full rounded-full object-cover border-[4px] border-white/80 shadow-[0_10px_20px_rgba(0,0,0,0.1)] relative z-10 group-hover:opacity-90 transition-opacity"
-              />
-              <div className="absolute inset-0 z-20 flex items-center justify-center rounded-full bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
+        {/* Top Icons */}
+        <div className="absolute top-0 left-0 w-full p-6 flex justify-end items-center text-white z-10">
+          <button
+            onClick={handleLogout}
+            className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/30 transition-colors"
+          >
+            <FiLogOut size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Main Card */}
+      <div className="bg-gray-100 rounded-t-[40px] -mt-10 relative px-6 pb-10 min-h-[calc(100vh-250px)] flex flex-col items-center">
+        {/* Avatar */}
+        <div
+          className="-mt-14 cursor-pointer group relative"
+          onClick={handleAvatarClick}
+        >
+          <div className="w-28 h-28 rounded-full border-[6px] border-white shadow-xl overflow-hidden relative bg-gray-100">
+            <img
+              src={user?.avatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.username || 'User'}`}
+              alt="Avatar"
+              className="w-full h-full object-cover group-hover:opacity-90 transition-opacity"
+            />
+            {/* Upload Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+              <FiCamera className="text-white w-8 h-8" />
             </div>
-            <h2 className="text-[1.6rem] font-extrabold text-[#1A1A1A] mb-1">{user?.username || '未登录'}</h2>
           </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </div>
 
-          <div className="flex flex-col gap-3 mt-5">
-            <button
-              onClick={() => navigate({ to: '/profile/change-password' })}
-              className="flex items-center px-6 py-4 bg-white/50 border border-white/60 rounded-[20px] text-[1rem] text-[#1A1A1A] cursor-pointer w-full gap-3 active:bg-white/80 active:scale-[0.98] transition-all"
-            >
-              <span className="flex items-center text-[#636E72]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-              </span>
-              <span>修改密码</span>
-              <span className="ml-auto text-[#aaa]">→</span>
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center px-6 py-4 bg-white/50 border border-white/60 rounded-[20px] text-[1rem] text-[#d63031] cursor-pointer w-full gap-3 active:bg-white/80 active:scale-[0.98] transition-all"
-            >
-              <span className="flex items-center text-[#d63031]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-              </span>
-              <span>退出登录</span>
-            </button>
+        {/* User Info */}
+        <div className="text-center mt-4 mb-8">
+          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+            @{user?.username || 'User'}
+          </h1>
+          <div className="text-sm text-gray-500 font-medium mt-1">
+            注册于 {joinedAt}
           </div>
-        </main>
+          <p className="text-gray-400 text-xs mt-3 italic max-w-xs mx-auto">
+            "每一个微小的脚步都算数。继续前行，书写属于你自己的故事。"
+          </p>
+        </div>
+
+        {/* Settings List */}
+        <div className="w-full max-w-md flex flex-col gap-4">
+          <button
+            onClick={() => navigate({ to: '/profile/change-password' })}
+            className="w-full flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md hover:border-gray-200 active:scale-[0.99] transition-all duration-200"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
+                <FiLock size={20} />
+              </div>
+              <span className="font-semibold text-gray-700 text-base">修改密码</span>
+            </div>
+            <FiChevronRight className="text-gray-400 group-hover:text-gray-600 transition-colors" size={20} />
+          </button>
+        </div>
       </div>
     </div>
   )
 }
+
+
+
+

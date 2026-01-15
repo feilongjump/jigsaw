@@ -8,6 +8,8 @@ import { getStaticUrl } from '@/utils/url'
 interface User {
   username: string
   avatar?: string
+  created_at?: string
+  [key: string]: any
 }
 
 interface AuthContextType {
@@ -29,16 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const res = await getUserInfo()
       if (res.code === 0 && res.data) {
-        const { username, avatar } = res.data
+        const { username, avatar, ...rest } = res.data
         const avatarUrl = getStaticUrl(avatar)
-        setUser({ username, avatar: avatarUrl })
-        localStorage.setItem('me', username)
-        if (avatarUrl) {
-          localStorage.setItem('avatar', avatarUrl)
-        }
-        else {
-          localStorage.removeItem('avatar')
-        }
+        const fullUserInfo = { ...rest, username, avatar: avatarUrl }
+        
+        setUser(fullUserInfo)
+        localStorage.setItem('user_info', JSON.stringify(fullUserInfo))
+        
+        // Remove legacy keys
+        localStorage.removeItem('me')
+        localStorage.removeItem('avatar')
       }
     }
     catch (error) {
@@ -50,7 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const init = async () => {
       const token = localStorage.getItem('token')
       if (token) {
-        // 尝试获取最新用户信息
+        // Load from cache first if available
+        const cachedUser = localStorage.getItem('user_info')
+        if (cachedUser) {
+          try {
+            setUser(JSON.parse(cachedUser))
+          } catch (e) {
+            console.error('Failed to parse user_info', e)
+          }
+        }
+        // Then fetch latest
         await fetchUserInfo()
       }
     }
@@ -76,10 +87,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const avatarUrl = getStaticUrl(res.data.avatar)
 
         // 更新本地状态
-        setUser(prev => prev ? { ...prev, avatar: avatarUrl } : null)
-
-        // 更新 localStorage
-        localStorage.setItem('avatar', avatarUrl)
+        setUser(prev => {
+          if (!prev) return null
+          const newUser = { ...prev, avatar: avatarUrl }
+          localStorage.setItem('user_info', JSON.stringify(newUser))
+          return newUser
+        })
 
         addToast({ title: '头像更新成功', color: 'success' })
       }
@@ -102,8 +115,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem('me')
+    localStorage.removeItem('user_info')
     localStorage.removeItem('token')
+    // Clear legacy keys just in case
+    localStorage.removeItem('me')
     localStorage.removeItem('avatar')
     setUser(null)
     addToast({ title: '已退出登录', color: 'primary' })
