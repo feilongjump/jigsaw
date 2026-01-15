@@ -7,7 +7,7 @@ export function TabBar() {
   
   const tabs = [
     { id: 'notes', path: '/notes', icon: FiHome, label: 'Home' },
-    { id: 'spending', path: '/spending', icon: FiCreditCard, label: 'Wallet' },
+    { id: 'wallet', path: '/wallet', icon: FiCreditCard, label: 'Wallet' },
     { id: 'profile', path: '/profile', icon: FiUser, label: 'Profile' },
   ]
 

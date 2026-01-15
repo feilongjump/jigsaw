@@ -229,7 +229,7 @@ function NotesPage() {
         </ModalContent>
       </Modal>
 
-      <div className="pt-4 pb-2 z-10 relative">
+      <div className="z-10 relative">
         <Header
           title={user?.username || 'Guest'}
           subtitle={getGreeting()}
