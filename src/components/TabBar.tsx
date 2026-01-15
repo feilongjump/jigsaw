@@ -1,81 +1,86 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiHome, FiCreditCard, FiUser } from 'react-icons/fi'
 
 export function TabBar() {
   const location = useLocation()
-  const isProfile = location.pathname.includes('/profile')
-  const isNotes = location.pathname.includes('/notes') || location.pathname === '/' // 根路径也默认显示笔记
+  
+  const tabs = [
+    { id: 'notes', path: '/notes', icon: FiHome, label: 'Home' },
+    { id: 'spending', path: '/spending', icon: FiCreditCard, label: 'Wallet' },
+    { id: 'profile', path: '/profile', icon: FiUser, label: 'Profile' },
+  ]
+
+  // Determine active tab
+  const activeTab = tabs.find(tab => {
+    if (tab.path === '/notes' && (location.pathname === '/' || location.pathname.startsWith('/notes'))) return true
+    if (tab.path !== '/notes' && location.pathname.startsWith(tab.path)) return true
+    return false
+  }) || tabs[0]
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[120px] h-[50px] rounded-full z-50 flex justify-around items-center px-1
-        bg-white/40
-        backdrop-blur-xl
+    <>
+    <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
+        <defs>
+            <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="1" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[220px] h-[50px] rounded-[25px] z-50 flex justify-around items-center px-2
+        bg-white/5 dark:bg-black/5
+        backdrop-blur-md
         backdrop-saturate-150
-        border border-white/60
-        shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]
+        border border-white/10 dark:border-white/5
+        shadow-[0_8px_32px_0_rgba(31,38,135,0.1)]
     "
+    style={{ backdropFilter: 'blur(16px) saturate(180%)' }}
     >
-
-      {/* 选中状态指示器 */}
-      <div className="absolute inset-0 flex justify-around items-center pointer-events-none px-1">
-        <div className="w-1/2 flex justify-center">
-          {isNotes && (
-            <motion.div
-              layoutId="tab-indicator"
-              className="w-[40px] h-[40px] rounded-full bg-white/60 shadow-sm backdrop-blur-md"
-              transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-            />
-          )}
-        </div>
-        <div className="w-1/2 flex justify-center">
-          {isProfile && (
-            <motion.div
-              layoutId="tab-indicator"
-              className="w-[40px] h-[40px] rounded-full bg-white/60 shadow-sm backdrop-blur-md"
-              transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-            />
-          )}
-        </div>
-      </div>
-
-      <Link
-        to="/notes"
-        className="w-1/2 h-full flex justify-center items-center z-10 relative active:scale-90 transition-transform duration-200"
-      >
-        <svg
-          className={`transition-all duration-300 ${isNotes ? 'stroke-[#0984E3] stroke-[2.5px] drop-shadow-[0_0_8px_rgba(9,132,227,0.5)]' : 'stroke-[#636E72] stroke-2 opacity-60'}`}
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
-        </svg>
-      </Link>
-
-      <Link
-        to="/profile"
-        className="w-1/2 h-full flex justify-center items-center z-10 relative active:scale-90 transition-transform duration-200"
-      >
-        <svg
-          className={`transition-all duration-300 ${isProfile ? 'stroke-[#0984E3] stroke-[2.5px] drop-shadow-[0_0_8px_rgba(9,132,227,0.5)]' : 'stroke-[#636E72] stroke-2 opacity-60'}`}
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </Link>
+      {tabs.map((tab) => {
+        const isActive = activeTab.id === tab.id
+        return (
+            <Link
+                key={tab.id}
+                to={tab.path}
+                className="w-10 h-10 flex flex-col justify-center items-center z-10 relative"
+            >
+                <motion.div
+                    whileTap={{ scale: 0.9 }}
+                    animate={{
+                        y: isActive ? -14 : 0,
+                    }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 25
+                    }}
+                    className={`relative p-2.5 rounded-full transition-colors duration-300 ${
+                        isActive 
+                            ? 'bg-gradient-to-br from-[#0984E3] to-[#00a8ff] text-white shadow-[0_10px_20px_-5px_rgba(9,132,227,0.4)]' 
+                            : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                    }`}
+                >
+                    <tab.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                </motion.div>
+                
+                <AnimatePresence>
+                    {isActive && (
+                        <motion.span 
+                            initial={{ opacity: 0, scale: 0.5, y: 10 }} 
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.5, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute -bottom-1 text-[10px] font-bold text-[#0984E3]"
+                        >
+                            {tab.label}
+                        </motion.span>
+                    )}
+                </AnimatePresence>
+            </Link>
+        )
+      })}
     </div>
+    </>
   )
 }
