@@ -49,7 +49,7 @@ function ProfilePage() {
         <img
           src={bgProfile}
           alt="Profile Background"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-[420px] object-cover"
         />
 
         {/* Top Icons */}
