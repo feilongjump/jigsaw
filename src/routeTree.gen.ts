@@ -13,8 +13,10 @@ import { Route as NotesRouteRouteImport } from './pages/notes/route'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as ProfileIndexRouteImport } from './pages/profile/index'
 import { Route as NotesIndexRouteImport } from './pages/notes/index'
+import { Route as FinanceIndexRouteImport } from './pages/finance/index'
 import { Route as ProfileChangePasswordRouteImport } from './pages/profile/change-password'
 import { Route as NotesEditRouteImport } from './pages/notes/edit'
+import { Route as FinanceTransactionsRouteImport } from './pages/finance/transactions'
 import { Route as AuthRegisterRouteImport } from './pages/auth/register'
 import { Route as AuthLoginRouteImport } from './pages/auth/login'
 
@@ -38,6 +40,11 @@ const NotesIndexRoute = NotesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NotesRouteRoute,
 } as any)
+const FinanceIndexRoute = FinanceIndexRouteImport.update({
+  id: '/finance/',
+  path: '/finance/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileChangePasswordRoute = ProfileChangePasswordRouteImport.update({
   id: '/profile/change-password',
   path: '/profile/change-password',
@@ -47,6 +54,11 @@ const NotesEditRoute = NotesEditRouteImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => NotesRouteRoute,
+} as any)
+const FinanceTransactionsRoute = FinanceTransactionsRouteImport.update({
+  id: '/finance/transactions',
+  path: '/finance/transactions',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
@@ -64,8 +76,10 @@ export interface FileRoutesByFullPath {
   '/notes': typeof NotesRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/finance/transactions': typeof FinanceTransactionsRoute
   '/notes/edit': typeof NotesEditRoute
   '/profile/change-password': typeof ProfileChangePasswordRoute
+  '/finance': typeof FinanceIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/profile': typeof ProfileIndexRoute
 }
@@ -73,8 +87,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/finance/transactions': typeof FinanceTransactionsRoute
   '/notes/edit': typeof NotesEditRoute
   '/profile/change-password': typeof ProfileChangePasswordRoute
+  '/finance': typeof FinanceIndexRoute
   '/notes': typeof NotesIndexRoute
   '/profile': typeof ProfileIndexRoute
 }
@@ -84,8 +100,10 @@ export interface FileRoutesById {
   '/notes': typeof NotesRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/finance/transactions': typeof FinanceTransactionsRoute
   '/notes/edit': typeof NotesEditRoute
   '/profile/change-password': typeof ProfileChangePasswordRoute
+  '/finance/': typeof FinanceIndexRoute
   '/notes/': typeof NotesIndexRoute
   '/profile/': typeof ProfileIndexRoute
 }
@@ -96,8 +114,10 @@ export interface FileRouteTypes {
     | '/notes'
     | '/auth/login'
     | '/auth/register'
+    | '/finance/transactions'
     | '/notes/edit'
     | '/profile/change-password'
+    | '/finance'
     | '/notes/'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
@@ -105,8 +125,10 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/login'
     | '/auth/register'
+    | '/finance/transactions'
     | '/notes/edit'
     | '/profile/change-password'
+    | '/finance'
     | '/notes'
     | '/profile'
   id:
@@ -115,8 +137,10 @@ export interface FileRouteTypes {
     | '/notes'
     | '/auth/login'
     | '/auth/register'
+    | '/finance/transactions'
     | '/notes/edit'
     | '/profile/change-password'
+    | '/finance/'
     | '/notes/'
     | '/profile/'
   fileRoutesById: FileRoutesById
@@ -126,7 +150,9 @@ export interface RootRouteChildren {
   NotesRouteRoute: typeof NotesRouteRouteWithChildren
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  FinanceTransactionsRoute: typeof FinanceTransactionsRoute
   ProfileChangePasswordRoute: typeof ProfileChangePasswordRoute
+  FinanceIndexRoute: typeof FinanceIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
 }
 
@@ -160,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesIndexRouteImport
       parentRoute: typeof NotesRouteRoute
     }
+    '/finance/': {
+      id: '/finance/'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile/change-password': {
       id: '/profile/change-password'
       path: '/profile/change-password'
@@ -173,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/notes/edit'
       preLoaderRoute: typeof NotesEditRouteImport
       parentRoute: typeof NotesRouteRoute
+    }
+    '/finance/transactions': {
+      id: '/finance/transactions'
+      path: '/finance/transactions'
+      fullPath: '/finance/transactions'
+      preLoaderRoute: typeof FinanceTransactionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/auth/register': {
       id: '/auth/register'
@@ -210,7 +250,9 @@ const rootRouteChildren: RootRouteChildren = {
   NotesRouteRoute: NotesRouteRouteWithChildren,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  FinanceTransactionsRoute: FinanceTransactionsRoute,
   ProfileChangePasswordRoute: ProfileChangePasswordRoute,
+  FinanceIndexRoute: FinanceIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,13 +1,13 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiHome, FiCreditCard, FiUser } from 'react-icons/fi'
+import { FiHome, FiPieChart, FiUser } from 'react-icons/fi'
 
 export function TabBar() {
   const location = useLocation()
   
   const tabs = [
     { id: 'notes', path: '/notes', icon: FiHome, label: 'Home' },
-    { id: 'wallet', path: '/wallet', icon: FiCreditCard, label: 'Wallet' },
+    { id: 'finance', path: '/finance', icon: FiPieChart, label: 'Finance' },
     { id: 'profile', path: '/profile', icon: FiUser, label: 'Profile' },
   ]
 
