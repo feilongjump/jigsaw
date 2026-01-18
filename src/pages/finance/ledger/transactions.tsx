@@ -23,7 +23,7 @@ import {
 } from 'recharts'
 import { useState, useMemo } from 'react'
 
-export const Route = createFileRoute('/finance/transactions')({
+export const Route = createFileRoute('/finance/ledger/transactions')({
   component: TransactionsPage,
 })
 
