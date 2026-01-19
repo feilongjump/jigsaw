@@ -32,8 +32,6 @@ const columns = [
 
 export function StockTable({ positions }: StockTableProps) {
   const renderCell = (position: StockPosition, columnKey: React.Key) => {
-    const cellValue = position[columnKey as keyof StockPosition];
-
     switch (columnKey) {
       case "symbol":
         return (
@@ -133,7 +131,7 @@ export function StockTable({ positions }: StockTableProps) {
           </div>
         );
       default:
-        return cellValue;
+        return position[columnKey as keyof StockPosition];
     }
   };
 

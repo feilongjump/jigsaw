@@ -4,10 +4,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
-  Button,
   Chip,
-  Divider,
   Table,
   TableHeader,
   TableColumn,
@@ -15,7 +12,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, YAxis, Tooltip, XAxis, CartesianGrid } from "recharts";
 import type { StockPosition } from "../data";
 
@@ -79,8 +76,8 @@ export function PositionDetailsModal({ isOpen, onOpenChange, position }: Positio
               </div>
 
               <h4 className="text-sm font-semibold text-default-600 mb-2">7日盈亏走势</h4>
-              <div className="h-[250px] w-full border border-default-100 rounded-xl p-2 mb-6">
-                  <ResponsiveContainer width="100%" height="100%">
+              <div className="h-[250px] w-full min-h-[250px] border border-default-100 rounded-xl p-2 mb-6 relative">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <AreaChart data={position.dailyPnLHistory}>
                       <defs>
                         <linearGradient id={`gradient-detail-${position.id}`} x1="0" y1="0" x2="0" y2="1">
@@ -123,44 +120,60 @@ export function PositionDetailsModal({ isOpen, onOpenChange, position }: Positio
               </div>
 
               <h4 className="text-sm font-semibold text-default-600 mb-2">交易记录</h4>
-              <Table aria-label="Trade history table" removeWrapper>
-                <TableHeader>
-                  <TableColumn>日期</TableColumn>
-                  <TableColumn>类型</TableColumn>
-                  <TableColumn>价格</TableColumn>
-                  <TableColumn>数量</TableColumn>
-                  <TableColumn>佣金</TableColumn>
-                  <TableColumn>印花税</TableColumn>
-                  <TableColumn>总金额</TableColumn>
-                </TableHeader>
-                <TableBody emptyContent={"暂无交易记录"}>
-                  {position.tradeHistory.map((trade) => (
-                    <TableRow key={trade.id}>
-                      <TableCell>{trade.date}</TableCell>
-                      <TableCell>
-                        <Chip
-                          size="sm"
-                          variant="flat"
-                          color={trade.type === "buy" ? "success" : "danger"}
-                        >
-                          {trade.type === "buy" ? "买入" : "卖出"}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>{trade.price.toFixed(2)}</TableCell>
-                      <TableCell>{trade.shares}</TableCell>
-                      <TableCell>{trade.commission.toFixed(2)}</TableCell>
-                      <TableCell>{trade.stampDuty.toFixed(2)}</TableCell>
-                      <TableCell className="font-semibold">{trade.totalCost.toFixed(2)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="flex flex-col gap-3 pr-1">
+                {position.tradeHistory.length > 0 ? (
+                  position.tradeHistory.map((trade) => (
+                    <div 
+                      key={trade.id} 
+                      className="group flex flex-col gap-2 p-3 rounded-xl border border-default-200 bg-content1 hover:border-default-400 transition-all shadow-sm"
+                    >
+                      {/* Header: Type, Date, Amount */}
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                           <div className={`p-1.5 rounded-lg ${trade.type === 'buy' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                              {trade.type === 'buy' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
+                           </div>
+                           <div className="flex flex-col">
+                              <span className="text-sm font-semibold text-default-900">
+                                {trade.type === 'buy' ? '买入' : '卖出'}
+                              </span>
+                              <span className="text-[10px] text-default-400">{trade.date}</span>
+                           </div>
+                        </div>
+                        <div className="flex flex-col items-end">
+                           <span className={`text-medium font-bold ${trade.type === 'buy' ? 'text-default-900' : 'text-danger'}`}>
+                              {trade.type === 'buy' ? '-' : '+'}{trade.totalCost.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                           </span>
+                           <span className="text-[10px] text-default-400">
+                              {trade.shares} 股 @ {trade.price.toFixed(2)}
+                           </span>
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="grid grid-cols-3 gap-2 px-2 py-1.5 bg-default-50 rounded-lg mt-1">
+                          <div className="flex flex-col">
+                             <span className="text-[10px] text-default-400">成交金额</span>
+                             <span className="text-xs font-medium text-default-700">{trade.amount.toFixed(2)}</span>
+                          </div>
+                          <div className="flex flex-col border-l border-default-200 pl-2">
+                             <span className="text-[10px] text-default-400">佣金</span>
+                             <span className="text-xs font-medium text-default-700">{trade.commission.toFixed(2)}</span>
+                          </div>
+                          <div className="flex flex-col border-l border-default-200 pl-2">
+                             <span className="text-[10px] text-default-400">印花税</span>
+                             <span className="text-xs font-medium text-default-700">{trade.stampDuty > 0 ? trade.stampDuty.toFixed(2) : '-'}</span>
+                          </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-default-400 text-sm">
+                    暂无交易记录
+                  </div>
+                )}
+              </div>
             </ModalBody>
-            <ModalFooter>
-              <Button color="primary" onPress={onClose}>
-                关闭
-              </Button>
-            </ModalFooter>
           </>
         )}
       </ModalContent>

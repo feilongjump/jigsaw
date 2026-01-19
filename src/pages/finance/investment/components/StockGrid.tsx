@@ -67,8 +67,8 @@ export function StockGrid({ positions }: StockGridProps) {
               
               <CardBody className="px-0 py-4 overflow-hidden">
                 {/* 趋势图区域 */}
-                <div className="h-24 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-24 w-full min-h-[96px] relative">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <AreaChart data={position.dailyPnLHistory}>
                       <defs>
                         <linearGradient id={`gradient-${position.id}`} x1="0" y1="0" x2="0" y2="1">

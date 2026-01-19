@@ -43,8 +43,8 @@ export function PnLChart({ data }: PnLChartProps) {
         </div>
       </CardHeader>
       <CardBody className="pb-4 px-0">
-        <div className="h-[500px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[500px] w-full min-h-[500px] relative">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <ComposedChart
               data={data}
               margin={{
