@@ -7,12 +7,15 @@ import {
   ShoppingBag, 
   Car, 
   Smartphone,
-  ChevronRight
+  ChevronRight,
+  Plus
 } from 'lucide-react'
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts'
 import { clsx } from 'clsx'
 import { motion } from 'framer-motion'
 import { StatCard } from '@/components/StatCard'
+import { AddTransactionModal } from './components/modals/AddTransactionModal'
+import { Button, useDisclosure } from '@heroui/react'
 
 export const Route = createFileRoute('/finance/ledger/')({
   component: LedgerPage,
@@ -103,6 +106,8 @@ const transactions = [
 ]
 
 function LedgerPage() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <div className="space-y-6">
       {/* 核心卡片: 余额展示 */}
@@ -185,14 +190,26 @@ function LedgerPage() {
 
       {/* 交易记录 - 极简列表视图 */}
       <section>
-        <div className="flex justify-between items-end mb-2 px-1">
-          <h2 className="text-lg font-bold text-zinc-900 tracking-tight">最近交易</h2>
-          <Link 
-            to="/finance/ledger/transactions"
-            className="text-xs font-medium text-zinc-400 hover:text-zinc-600 flex items-center gap-1"
-          >
-            查看全部 <ChevronRight size={12} />
-          </Link>
+        <div className="flex justify-between items-center mb-4 px-1">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold text-zinc-900 tracking-tight">最近交易</h2>
+            <Button 
+              size="sm" 
+              color="primary" 
+              variant="flat"
+              className="font-medium bg-primary-50 text-primary-600 dark:bg-primary-900/20"
+              startContent={<Plus size={16} />}
+              onPress={onOpen}
+            >
+              记一笔
+            </Button>
+          </div>
+            <Link 
+              to="/finance/ledger/transactions"
+              className="text-xs font-medium text-zinc-400 hover:text-zinc-600 flex items-center gap-1"
+            >
+              全部 <ChevronRight size={12} />
+            </Link>
         </div>
 
         <motion.div 
@@ -229,6 +246,8 @@ function LedgerPage() {
           ))}
         </motion.div>
       </section>
+
+      <AddTransactionModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   )
 }
