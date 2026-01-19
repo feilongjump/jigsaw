@@ -4,15 +4,7 @@ import { clsx } from 'clsx'
 import { 
   ArrowLeft,
   Filter,
-  Calendar,
-  Wallet,
-  CreditCard,
-  ShoppingBag,
-  Coffee,
-  Car,
-  Smartphone,
-  Utensils,
-  Home
+  Calendar
 } from 'lucide-react'
 import { 
   BarChart, 
@@ -22,62 +14,17 @@ import {
   Cell
 } from 'recharts'
 import { useState, useMemo } from 'react'
+import { 
+  dailyExpenseData, 
+  incomeBreakdown, 
+  transactionHistory, 
+  totalIncome
+} from './data'
+import type { TransactionItem } from './data'
 
 export const Route = createFileRoute('/finance/ledger/transactions')({
   component: TransactionsPage,
 })
-
-// --- Types ---
-interface TransactionItem {
-  id: number
-  title: string
-  category: string
-  amount: number
-  type: 'expense' | 'income'
-  icon: any
-  color: 'emerald' | 'rose'
-}
-
-interface DailyTransactionGroup {
-  date: string
-  items: TransactionItem[]
-}
-
-// --- Mock Data ---
-
-// 1. 最近30天每日支出数据
-const dailyExpenseData = Array.from({ length: 30 }, (_, i) => ({
-  day: `${i + 1}日`,
-  amount: Math.floor(Math.random() * 500) + 50, // 50-550 random expense
-}))
-
-// 2. 最近30天收入构成 (用于层叠进度条)
-const incomeBreakdown = [
-  { label: '工资收入', amount: 15000, color: 'bg-rose-500', width: '70%' },
-  { label: '理财收益', amount: 3200, color: 'bg-rose-400', width: '15%' },
-  { label: '兼职收入', amount: 1800, color: 'bg-rose-300', width: '10%' },
-  { label: '其他', amount: 500, color: 'bg-rose-200', width: '5%' },
-]
-const totalIncome = 20500
-
-// 3. 最近30天详细流水
-const transactionHistory: DailyTransactionGroup[] = [
-  { date: '今天', items: [
-    { id: 1, title: 'Apple Store', category: '数码产品', amount: -8999.00, type: 'expense', icon: Smartphone, color: 'emerald' },
-    { id: 2, title: '7-Eleven', category: '生活日用', amount: -28.50, type: 'expense', icon: ShoppingBag, color: 'emerald' },
-  ]},
-  { date: '昨天', items: [
-    { id: 3, title: '工资收入', category: '科技股份有限公司', amount: 15000.00, type: 'income', icon: Wallet, color: 'rose' },
-    { id: 4, title: '星巴克', category: '餐饮美食', amount: -35.00, type: 'expense', icon: Coffee, color: 'emerald' },
-  ]},
-  { date: '10月23日', items: [
-    { id: 5, title: '滴滴出行', category: '交通出行', amount: -45.00, type: 'expense', icon: Car, color: 'emerald' },
-    { id: 6, title: '山姆会员店', category: '家庭采买', amount: -456.00, type: 'expense', icon: Home, color: 'emerald' },
-  ]},
-  { date: '10月22日', items: [
-    { id: 7, title: '海底捞', category: '聚餐', amount: -328.00, type: 'expense', icon: Utensils, color: 'emerald' },
-  ]},
-]
 
 function TransactionItemCard({ item }: { item: TransactionItem }) {
   return (
@@ -126,7 +73,7 @@ function TransactionsPage() {
       
       {/* 1. 自定义 Header */}
       <header className="px-4 py-4 flex items-center justify-between">
-        <Link to="/finance" className="p-2 -ml-2 rounded-full hover:bg-zinc-100 transition-colors text-zinc-600">
+        <Link to="/finance/ledger" className="p-2 -ml-2 rounded-full hover:bg-zinc-100 transition-colors text-zinc-600">
           <ArrowLeft size={20} />
         </Link>
         <span className="font-bold text-lg">收支明细</span>

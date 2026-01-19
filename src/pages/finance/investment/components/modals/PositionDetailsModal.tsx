@@ -5,12 +5,6 @@ import {
   ModalHeader,
   ModalBody,
   Chip,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
 } from "@heroui/react";
 import { TrendingUp, TrendingDown, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, YAxis, Tooltip, XAxis, CartesianGrid } from "recharts";

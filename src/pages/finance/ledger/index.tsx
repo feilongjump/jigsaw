@@ -3,10 +3,6 @@ import {
   ArrowUpRight, 
   Wallet, 
   CreditCard, 
-  Coffee, 
-  ShoppingBag, 
-  Car, 
-  Smartphone,
   ChevronRight,
   Plus
 } from 'lucide-react'
@@ -16,6 +12,12 @@ import { motion } from 'framer-motion'
 import { StatCard } from '@/components/StatCard'
 import { AddTransactionModal } from './components/modals/AddTransactionModal'
 import { Button, useDisclosure } from '@heroui/react'
+import { 
+  chartData, 
+  expenseData, 
+  incomeData, 
+  dashboardTransactions as transactions 
+} from './data'
 
 export const Route = createFileRoute('/finance/ledger/')({
   component: LedgerPage,
@@ -26,84 +28,6 @@ export const Route = createFileRoute('/finance/ledger/')({
 const COLOR_INCOME = "text-rose-500"
 const COLOR_EXPENSE = "text-emerald-500"
 const BG_INCOME = "bg-rose-50"
-const BG_EXPENSE = "bg-emerald-50"
-
-const chartData = [
-  { value: 2400 }, { value: 1398 }, { value: 9800 }, 
-  { value: 3908 }, { value: 4800 }, { value: 3800 }, 
-  { value: 4300 }, { value: 9300 }, { value: 15888 }
-]
-
-// 模拟超出场景：本月支出 6000，上月 5000，超出 120%
-const expenseData = {
-    current: 6000,
-    lastMonth: 5000,
-    percentage: 120
-}
-
-const incomeData = {
-    current: 8500,
-    lastMonth: 10000,
-    percentage: 85
-}
-
-const transactions = [
-  { 
-    id: 1, 
-    title: 'Apple Store', 
-    category: '数码产品', 
-    amount: -8999.00, 
-    type: 'expense', 
-    date: '今天, 10:23', 
-    icon: Smartphone,
-    iconBg: 'bg-zinc-100',
-    iconColor: 'text-zinc-600'
-  },
-  { 
-    id: 2, 
-    title: '工资收入', 
-    category: '科技股份有限公司', 
-    amount: 15000.00, 
-    type: 'income', 
-    date: '昨天', 
-    icon: Wallet,
-    iconBg: BG_INCOME, // 匹配收入主题色
-    iconColor: COLOR_INCOME
-  },
-  { 
-    id: 3, 
-    title: '星巴克', 
-    category: '餐饮美食', 
-    amount: -35.00, 
-    type: 'expense', 
-    date: '昨天', 
-    icon: Coffee,
-    iconBg: BG_EXPENSE, // 匹配支出主题色
-    iconColor: COLOR_EXPENSE
-  },
-  { 
-    id: 4, 
-    title: '滴滴出行', 
-    category: '交通出行', 
-    amount: -45.00, 
-    type: 'expense', 
-    date: '10月23日', 
-    icon: Car,
-    iconBg: BG_EXPENSE,
-    iconColor: COLOR_EXPENSE
-  },
-  { 
-    id: 5, 
-    title: '7-Eleven', 
-    category: '生活日用', 
-    amount: -28.50, 
-    type: 'expense', 
-    date: '10月23日', 
-    icon: ShoppingBag, 
-    iconBg: BG_EXPENSE,
-    iconColor: COLOR_EXPENSE
-  },
-]
 
 function LedgerPage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

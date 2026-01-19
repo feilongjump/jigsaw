@@ -6,13 +6,12 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  User,
   Chip,
   Tooltip,
   Button,
 } from "@heroui/react";
 import { Eye, Edit, Trash2, TrendingUp, TrendingDown } from "lucide-react";
-import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
+import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import type { StockPosition } from "./data";
 
 interface StockTableProps {
@@ -131,7 +130,9 @@ export function StockTable({ positions }: StockTableProps) {
           </div>
         );
       default:
-        return position[columnKey as keyof StockPosition];
+        // 安全处理默认情况，避免渲染对象
+        const cellValue = position[columnKey as keyof StockPosition];
+        return typeof cellValue === 'object' ? null : cellValue as React.ReactNode;
     }
   };
 
