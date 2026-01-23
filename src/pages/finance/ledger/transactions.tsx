@@ -19,8 +19,8 @@ import {
   incomeBreakdown, 
   transactionHistory, 
   totalIncome
-} from './data'
-import type { TransactionItem } from './data'
+} from './components/data'
+import type { TransactionItem } from './components/data'
 
 export const Route = createFileRoute('/finance/ledger/transactions')({
   component: TransactionsPage,

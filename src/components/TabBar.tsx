@@ -1,14 +1,14 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiHome, FiPieChart, FiUser } from 'react-icons/fi'
+import { Home, PieChart, User } from 'lucide-react'
 
 export function TabBar() {
   const location = useLocation()
   
   const tabs = [
-    { id: 'notes', path: '/notes', icon: FiHome, label: 'Home' },
-    { id: 'finance', path: '/finance', icon: FiPieChart, label: 'Finance' },
-    { id: 'profile', path: '/profile', icon: FiUser, label: 'Profile' },
+    { id: 'notes', path: '/notes', icon: Home, label: 'Home' },
+    { id: 'finance', path: '/finance', icon: PieChart, label: 'Finance' },
+    { id: 'profile', path: '/profile', icon: User, label: 'Profile' },
   ]
 
   // Determine active tab

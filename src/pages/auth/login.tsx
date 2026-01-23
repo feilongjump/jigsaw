@@ -2,7 +2,7 @@ import { Button, Input } from '@heroui/react'
 import { addToast } from '@heroui/toast'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { FaGithub, FaWeixin } from 'react-icons/fa'
+import { Github, MessageCircle } from 'lucide-react'
 import { AuthLayout } from '@/components/AuthLayout'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -73,10 +73,10 @@ function LoginPage() {
 
       <div className="flex gap-4 justify-center mb-2">
         <Button isIconOnly variant="flat" className="bg-[#07c160]/10 text-[#07c160]">
-          <FaWeixin size={20} />
+          <MessageCircle size={20} />
         </Button>
         <Button isIconOnly variant="flat" className="bg-black/10 text-black">
-          <FaGithub size={20} />
+          <Github size={20} />
         </Button>
       </div>
 

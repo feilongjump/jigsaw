@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useMemo, useRef } from 'react'
-import { FiLogOut, FiCamera, FiLock, FiChevronRight } from 'react-icons/fi'
+import { LogOut, Camera, Lock } from 'lucide-react'
 import { fromNow } from '@/utils/date'
 import { useAuth } from '@/contexts/AuthContext'
 import bgProfile from '@/assets/bg-profile.png'
@@ -43,7 +43,7 @@ function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans pb-20">
+    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
       {/* Header Background */}
       <div className="h-72 w-full relative overflow-hidden">
         <img
@@ -53,18 +53,24 @@ function ProfilePage() {
         />
 
         {/* Top Icons */}
-        <div className="absolute top-0 left-0 w-full p-6 flex justify-end items-center text-white z-10">
+        <div className="absolute top-0 left-0 w-full p-6 flex justify-end items-center gap-3 text-white z-10">
+          <button
+            onClick={() => navigate({ to: '/profile/change-password' })}
+            className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/30 transition-colors"
+          >
+            <Lock size={20} />
+          </button>
           <button
             onClick={handleLogout}
             className="p-3 bg-white/20 backdrop-blur-md rounded-full hover:bg-white/30 transition-colors"
           >
-            <FiLogOut size={20} />
+            <LogOut size={20} />
           </button>
         </div>
       </div>
 
       {/* Main Card */}
-      <div className="bg-gray-100 rounded-t-[40px] -mt-10 relative px-6 pb-10 min-h-[calc(100vh-250px)] flex flex-col items-center">
+      <div className="bg-gray-100 rounded-t-[40px] -mt-10 relative px-6 pb-32 flex-1 flex flex-col items-center">
         {/* Avatar */}
         <div
           className="-mt-14 cursor-pointer group relative"
@@ -78,7 +84,7 @@ function ProfilePage() {
             />
             {/* Upload Overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-              <FiCamera className="text-white w-8 h-8" />
+              <Camera className="text-white w-8 h-8" />
             </div>
           </div>
           <input
@@ -101,22 +107,6 @@ function ProfilePage() {
           <p className="text-gray-400 text-xs mt-3 italic max-w-xs mx-auto">
             "每一个微小的脚步都算数。继续前行，书写属于你自己的故事。"
           </p>
-        </div>
-
-        {/* Settings List */}
-        <div className="w-full max-w-md flex flex-col gap-4">
-          <button
-            onClick={() => navigate({ to: '/profile/change-password' })}
-            className="w-full flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md hover:border-gray-200 active:scale-[0.99] transition-all duration-200"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors">
-                <FiLock size={20} />
-              </div>
-              <span className="font-semibold text-gray-700 text-base">修改密码</span>
-            </div>
-            <FiChevronRight className="text-gray-400 group-hover:text-gray-600 transition-colors" size={20} />
-          </button>
         </div>
       </div>
     </div>

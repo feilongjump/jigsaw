@@ -17,7 +17,7 @@ import {
   expenseData, 
   incomeData, 
   dashboardTransactions as transactions 
-} from './data'
+} from './components/data'
 
 export const Route = createFileRoute('/finance/ledger/')({
   component: LedgerPage,

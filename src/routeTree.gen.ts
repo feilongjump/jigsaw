@@ -100,10 +100,10 @@ export interface FileRoutesByFullPath {
   '/profile/change-password': typeof ProfileChangePasswordRoute
   '/finance/': typeof FinanceIndexRoute
   '/notes/': typeof NotesIndexRoute
-  '/profile': typeof ProfileIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/finance/ledger/transactions': typeof FinanceLedgerTransactionsRoute
-  '/finance/investment': typeof FinanceInvestmentIndexRoute
-  '/finance/ledger': typeof FinanceLedgerIndexRoute
+  '/finance/investment/': typeof FinanceInvestmentIndexRoute
+  '/finance/ledger/': typeof FinanceLedgerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -146,10 +146,10 @@ export interface FileRouteTypes {
     | '/profile/change-password'
     | '/finance/'
     | '/notes/'
-    | '/profile'
+    | '/profile/'
     | '/finance/ledger/transactions'
-    | '/finance/investment'
-    | '/finance/ledger'
+    | '/finance/investment/'
+    | '/finance/ledger/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -216,7 +216,7 @@ declare module '@tanstack/react-router' {
     '/profile/': {
       id: '/profile/'
       path: '/profile'
-      fullPath: '/profile'
+      fullPath: '/profile/'
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -265,14 +265,14 @@ declare module '@tanstack/react-router' {
     '/finance/ledger/': {
       id: '/finance/ledger/'
       path: '/ledger'
-      fullPath: '/finance/ledger'
+      fullPath: '/finance/ledger/'
       preLoaderRoute: typeof FinanceLedgerIndexRouteImport
       parentRoute: typeof FinanceRouteRoute
     }
     '/finance/investment/': {
       id: '/finance/investment/'
       path: '/investment'
-      fullPath: '/finance/investment'
+      fullPath: '/finance/investment/'
       preLoaderRoute: typeof FinanceInvestmentIndexRouteImport
       parentRoute: typeof FinanceRouteRoute
     }
