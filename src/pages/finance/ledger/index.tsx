@@ -141,7 +141,7 @@ function LedgerPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {transactions.map((tx, i) => (
+          {transactions.map((tx) => (
             <div key={tx.id} className="flex items-center justify-between py-2 px-1">
                 <div className="flex items-center gap-4">
                   <div className={clsx(
