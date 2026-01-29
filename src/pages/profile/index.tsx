@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LogOut, Camera, Lock, Plus, Trash2, Edit2, EyeOff } from 'lucide-react'
 import { fromNow } from '@/utils/date'
 import { useAuth } from '@/contexts/AuthContext'
 import bgProfile from '@/assets/bg-profile.png'
 import { motion, AnimatePresence } from 'framer-motion'
+import { addToast } from '@heroui/toast'
 import {
   Modal,
   ModalContent,
@@ -17,7 +18,8 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { UserWalletType, type AccountData, type AccountType, type WalletExtraConfig } from './types';
+import { UserWalletType, type AccountData, type AccountType } from './types';
+import { createWallet, deleteWallet, getWallets, updateWallet, type WalletApiItem } from '@/services/walletService'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -55,132 +57,6 @@ const mapFrontendTypeToBackend = (type: AccountType): UserWalletType => {
   }
 };
 
-const INITIAL_ACCOUNTS: AccountData[] = [
-  {
-    id: '1',
-    name: '微信',
-    type: UserWalletType.WeChat,
-    uiType: 'wechat',
-    title: '微信',
-    subTitle: '社交支付，生活无忧',
-    remark: '社交支付，生活无忧',
-    balance: '8,888.88',
-    liability: '0.00',
-    leftText: ['随时随地，畅享生活', '红包传情，连接你我'],
-    rightText: ['绿色支付，低碳出行', '智慧生活，触手可及'],
-    mainText: '社交',
-    bottomText: '微信钱包',
-    icon: '💬',
-    stampText: '即时\n到账',
-    color: '#07c160',
-    createdDays: 1280,
-    is_hidden: false
-  },
-  {
-    id: '2',
-    name: '支付',
-    type: UserWalletType.Alipay,
-    uiType: 'alipay',
-    title: '支付',
-    subTitle: '信用生活，点滴积累',
-    remark: '信用生活，点滴积累',
-    balance: '12,345.00',
-    liability: '0.00',
-    leftText: ['蚂蚁森林，种下希望', '信用生活，点滴珍贵'],
-    rightText: ['数字金融，普惠大众', '支付无忧，安全便捷'],
-    mainText: '信用',
-    bottomText: '支付宝',
-    icon: '💳',
-    stampText: '快捷\n支付',
-    color: '#1677ff',
-    createdDays: 985,
-    is_hidden: false
-  },
-  {
-    id: '3',
-    name: '储蓄',
-    type: UserWalletType.BankCard,
-    uiType: 'bank',
-    title: '储蓄',
-    subTitle: '积少成多，有备无患',
-    remark: '积少成多，有备无患',
-    balance: '**** 8888',
-    liability: '0.00',
-    leftText: ['稳健理财，安享未来', '精打细算，财富增值'],
-    rightText: ['安全保障，贴心服务', '随时存取，灵活便捷'],
-    mainText: '财富',
-    bottomText: '招商银行',
-    icon: '🏦',
-    stampText: '储蓄\n有道',
-    color: '#b92b27',
-    createdDays: 2100,
-    is_hidden: false
-  },
-  {
-    id: '4',
-    name: '透支',
-    type: UserWalletType.CreditCard,
-    uiType: 'credit',
-    title: '透支',
-    subTitle: '先享后付，量入为出',
-    remark: '先享后付，量入为出',
-    balance: '50,000.00',
-    liability: '2,300.00',
-    extra_config: { bill_date: 10, repayment_date: 25 },
-    leftText: ['精彩生活，即刻启程', '信用消费，尽在掌握'],
-    rightText: ['尊贵礼遇，专属特权', '积分回馈，好礼相送'],
-    mainText: '额度',
-    bottomText: '白金卡',
-    icon: '💎',
-    stampText: '信用\n至上',
-    color: '#722ed1',
-    createdDays: 450,
-    is_hidden: false
-  },
-  {
-    id: '5',
-    name: '投资',
-    type: UserWalletType.Investment,
-    uiType: 'investment',
-    title: '投资',
-    subTitle: '复利增长，财富自由',
-    remark: '复利增长，财富自由',
-    balance: '10,000.00',
-    liability: '0.00',
-    extra_config: { commission_rate: 0.00025, stamp_duty_rate: 0.001, transfer_fee_rate: 0.00002 },
-    leftText: ['价值投资，穿越牛熊', '资产配置，分散风险'],
-    rightText: ['理性决策，长期持有', '时间玫瑰，静待花开'],
-    mainText: '增长',
-    bottomText: '证券账户',
-    icon: '📈',
-    stampText: '复利\n增长',
-    color: '#fa8c16',
-    createdDays: 120,
-    is_hidden: false
-  },
-  {
-    id: '6',
-    name: '杠杆',
-    type: UserWalletType.Margin,
-    uiType: 'margin',
-    title: '杠杆',
-    subTitle: '风险管理，以小博大',
-    remark: '风险管理，以小博大',
-    balance: '200,000.00',
-    liability: '100,000.00',
-    extra_config: { commission_rate: 0.0003, stamp_duty_rate: 0.001, transfer_fee_rate: 0.00002, interest_rate: 0.06 },
-    leftText: ['敬畏市场，顺势而为', '严格止损，控制回撤'],
-    rightText: ['专业工具，助力交易', '把握机会，乘风破浪'],
-    mainText: '博弈',
-    bottomText: '两融账户',
-    icon: '⚖️',
-    stampText: '风险\n自担',
-    color: '#eb2f96',
-    createdDays: 60,
-    is_hidden: false
-  }
-];
-
 const ACCOUNT_TYPES = [
   { value: 'wechat', label: '微信', color: '#07c160', icon: '💬', type: UserWalletType.WeChat },
   { value: 'alipay', label: '支付宝', color: '#1677ff', icon: '💳', type: UserWalletType.Alipay },
@@ -191,6 +67,141 @@ const ACCOUNT_TYPES = [
   { value: 'cash', label: '现金', color: '#20c997', icon: '💵', type: UserWalletType.Cash },
   { value: 'stored', label: '储值卡', color: '#fd7e14', icon: '🎫', type: UserWalletType.StoredValue },
 ];
+
+const UI_TEMPLATES: Record<AccountType, { leftText: string[]; rightText: string[]; mainText: string; bottomText: string; stampText: string }> = {
+  wechat: {
+    leftText: ['随时随地，畅享生活', '红包传情，连接你我'],
+    rightText: ['绿色支付，低碳出行', '智慧生活，触手可及'],
+    mainText: '社交',
+    bottomText: '微信钱包',
+    stampText: '即时\n到账'
+  },
+  alipay: {
+    leftText: ['蚂蚁森林，种下希望', '信用生活，点滴珍贵'],
+    rightText: ['数字金融，普惠大众', '支付无忧，安全便捷'],
+    mainText: '信用',
+    bottomText: '支付宝',
+    stampText: '快捷\n支付'
+  },
+  bank: {
+    leftText: ['稳健理财，安享未来', '精打细算，财富增值'],
+    rightText: ['安全保障，贴心服务', '随时存取，灵活便捷'],
+    mainText: '财富',
+    bottomText: '银行卡',
+    stampText: '储蓄\n有道'
+  },
+  credit: {
+    leftText: ['精彩生活，即刻启程', '信用消费，尽在掌握'],
+    rightText: ['尊贵礼遇，专属特权', '积分回馈，好礼相送'],
+    mainText: '额度',
+    bottomText: '信用卡',
+    stampText: '信用\n至上'
+  },
+  investment: {
+    leftText: ['价值投资，穿越牛熊', '资产配置，分散风险'],
+    rightText: ['理性决策，长期持有', '时间玫瑰，静待花开'],
+    mainText: '增长',
+    bottomText: '投资账户',
+    stampText: '复利\n增长'
+  },
+  margin: {
+    leftText: ['敬畏市场，顺势而为', '严格止损，控制回撤'],
+    rightText: ['专业工具，助力交易', '把握机会，乘风破浪'],
+    mainText: '博弈',
+    bottomText: '两融账户',
+    stampText: '风险\n自担'
+  },
+  cash: {
+    leftText: ['现金为王，随取随用', '小额支付，快速结算'],
+    rightText: ['应急备用，安全稳妥', '掌控支出，清晰明了'],
+    mainText: '现金',
+    bottomText: '随身现金',
+    stampText: '随时\n可用'
+  },
+  stored: {
+    leftText: ['储值便利，消费更省', '余额可查，轻松管理'],
+    rightText: ['快捷结算，优惠相随', '精打细算，理性消费'],
+    mainText: '储值',
+    bottomText: '储值卡',
+    stampText: '储值\n即用'
+  },
+  add: {
+    leftText: [],
+    rightText: [],
+    mainText: '',
+    bottomText: '',
+    stampText: ''
+  }
+}
+
+const getTypeConfig = (uiType: AccountType) => {
+  return ACCOUNT_TYPES.find(item => item.value === uiType)
+}
+
+const formatAmount = (value?: number | string) => {
+  if (value === undefined || value === null)
+    return '0.00'
+  const num = typeof value === 'string' ? Number(value.replace(/,/g, '')) : value
+  if (Number.isNaN(num))
+    return '0.00'
+  return num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const parseAmount = (value?: number | string) => {
+  if (value === undefined || value === null || value === '')
+    return 0
+  const num = typeof value === 'string' ? Number(value.replace(/,/g, '')) : value
+  return Number.isNaN(num) ? 0 : num
+}
+
+const calculateDays = (createdAt?: string) => {
+  if (!createdAt)
+    return 0
+  const date = new Date(createdAt)
+  if (Number.isNaN(date.getTime()))
+    return 0
+  return Math.max(0, Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)))
+}
+
+const normalizeWalletList = (data: unknown): WalletApiItem[] => {
+  if (Array.isArray(data))
+    return data as WalletApiItem[]
+  if (data && Array.isArray((data as any).list))
+    return (data as any).list as WalletApiItem[]
+  if (data && Array.isArray((data as any).data))
+    return (data as any).data as WalletApiItem[]
+  return []
+}
+
+const buildAccountFromApi = (wallet: WalletApiItem): AccountData => {
+  const uiType = mapBackendTypeToFrontend(wallet.type)
+  const typeConfig = getTypeConfig(uiType)
+  const template = UI_TEMPLATES[uiType] || UI_TEMPLATES.bank
+  const title = wallet.name || typeConfig?.label || '账户'
+  const subTitle = wallet.remark || ''
+  return {
+    id: String(wallet.id),
+    name: wallet.name,
+    type: wallet.type,
+    balance: formatAmount(wallet.balance),
+    liability: formatAmount(wallet.liability),
+    extra_config: wallet.extra_config,
+    sort: wallet.sort,
+    remark: wallet.remark,
+    is_hidden: wallet.is_hidden ?? false,
+    uiType,
+    title,
+    subTitle: subTitle || typeConfig?.label || '',
+    leftText: template.leftText,
+    rightText: template.rightText,
+    mainText: template.mainText,
+    bottomText: template.bottomText,
+    icon: typeConfig?.icon || '💳',
+    stampText: template.stampText,
+    color: typeConfig?.color || '#b92b27',
+    createdDays: calculateDays(wallet.created_at),
+  }
+}
 
 interface AccountCardProps {
   data: AccountData;
@@ -371,10 +382,26 @@ function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Wallet State
-  const [accounts, setAccounts] = useState<AccountData[]>(INITIAL_ACCOUNTS);
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [editingAccount, setEditingAccount] = useState<AccountData | null>(null);
   const [formData, setFormData] = useState<Partial<AccountData>>({});
+
+  const loadWallets = useCallback(async () => {
+    try {
+      const res = await getWallets()
+      const list = normalizeWalletList(res.data)
+      setAccounts(list.map(buildAccountFromApi))
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : '获取钱包失败'
+      addToast({ color: 'danger', description: message })
+    }
+  }, [])
+
+  useEffect(() => {
+    loadWallets()
+  }, [loadWallets])
 
   const displayAccounts = useMemo(() => {
     const active = accounts.filter(a => !a.is_hidden);
@@ -395,15 +422,21 @@ function ProfilePage() {
       uiType: 'bank',
       color: '#b92b27',
       icon: '🏦',
+      name: '新账户',
       title: '新账户',
-      subTitle: '描述文本',
+      remark: '',
+      subTitle: '',
       balance: '0.00',
+      liability: '0.00',
+      sort: 0,
+      is_hidden: false,
+      extra_config: {},
       createdDays: 0,
-      leftText: ['规划未来', '理性消费'],
-      rightText: ['积少成多', '财富增值'],
-      mainText: '账户',
-      bottomText: '储蓄卡',
-      stampText: '新\n账户'
+      leftText: UI_TEMPLATES.bank.leftText,
+      rightText: UI_TEMPLATES.bank.rightText,
+      mainText: UI_TEMPLATES.bank.mainText,
+      bottomText: UI_TEMPLATES.bank.bottomText,
+      stampText: UI_TEMPLATES.bank.stampText
     });
     onOpen();
   };
@@ -414,35 +447,68 @@ function ProfilePage() {
     onOpen();
   };
 
-  const handleDelete = (id: string) => {
-    setAccounts(prev => prev.filter(a => a.id !== id));
-    // Reset page if needed to avoid index out of bounds
-    setPage([0, 0]);
-  };
-
-  const handleArchive = (id: string) => {
-    setAccounts(prev => prev.map(a => 
-      a.id === id ? { ...a, is_hidden: true } : a
-    ));
-    setPage([0, 0]);
-  };
-
-  const handleSave = () => {
-    if (editingAccount) {
-      // Update
-      setAccounts(prev => prev.map(a => 
-        a.id === editingAccount.id ? { ...a, ...formData } as AccountData : a
-      ));
-    } else {
-      // Add
-      const newAccount = {
-        ...formData,
-        id: Math.random().toString(36).substr(2, 9),
-        createdDays: 0,
-      } as AccountData;
-      setAccounts(prev => [...prev, newAccount]);
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteWallet(id)
+      await loadWallets()
+      setPage([0, 0]);
     }
-    onClose();
+    catch (error) {
+      const message = error instanceof Error ? error.message : '删除失败'
+      addToast({ color: 'danger', description: message })
+    }
+  };
+
+  const handleArchive = async (id: string) => {
+    const target = accounts.find(a => a.id === id)
+    if (!target)
+      return
+    try {
+      await updateWallet(id, { name: target.name, is_hidden: true })
+      await loadWallets()
+      setPage([0, 0]);
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : '归档失败'
+      addToast({ color: 'danger', description: message })
+    }
+  };
+
+  const handleSave = async () => {
+    const name = formData.name?.trim() || ''
+    if (!name) {
+      addToast({ color: 'danger', description: '请输入标题' })
+      return
+    }
+    try {
+      if (editingAccount) {
+        await updateWallet(editingAccount.id, {
+          name,
+          is_hidden: formData.is_hidden ?? editingAccount.is_hidden ?? false
+        })
+      } else {
+        const uiType = formData.uiType || 'bank'
+        const type = formData.type || mapFrontendTypeToBackend(uiType)
+        const extraConfig = formData.extra_config || {}
+        const payload = {
+          name,
+          type,
+          balance: parseAmount(formData.balance),
+          liability: parseAmount(formData.liability),
+          remark: formData.remark || '',
+          sort: formData.sort ?? 0,
+          extra_config: extraConfig
+        }
+        await createWallet(payload)
+      }
+      await loadWallets()
+      onClose()
+      setEditingAccount(null)
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : '保存失败'
+      addToast({ color: 'danger', description: message })
+    }
   };
 
   const handleTypeChange = (value: string) => {
@@ -454,10 +520,30 @@ function ProfilePage() {
         uiType: value as AccountType,
         color: typeConfig.color,
         icon: typeConfig.icon,
-        title: typeConfig.label
+        title: prev.title || typeConfig.label,
+        name: prev.name || typeConfig.label,
+        extra_config: {
+          ...prev.extra_config,
+          rules: (value === 'investment' || value === 'margin') ? (prev.extra_config?.rules || []) : prev.extra_config?.rules
+        }
       }));
     }
   };
+
+  const updateRuleField = (field: string, value: string | number | undefined) => {
+    setFormData(prev => {
+      const rules = [...(prev.extra_config?.rules || [])]
+      const current = rules[0] || {}
+      rules[0] = { ...current, [field]: value }
+      return {
+        ...prev,
+        extra_config: {
+          ...prev.extra_config,
+          rules
+        }
+      }
+    })
+  }
 
   const joinedAt = useMemo(() => {
     if (!user?.created_at)
@@ -607,7 +693,7 @@ function ProfilePage() {
                   <div className="flex flex-col gap-4">
                     <Select 
                       label="账户类型" 
-                      selectedKeys={formData.type ? [formData.type] : []}
+                      selectedKeys={formData.uiType ? [formData.uiType] : []}
                       onChange={(e) => handleTypeChange(e.target.value)}
                     >
                       {ACCOUNT_TYPES.map((type) => (
@@ -656,28 +742,35 @@ function ProfilePage() {
                       )}
                     </div>
 
-                    {/* Extra Config Fields */}
                     {formData.uiType === 'credit' && (
-                      <div className="flex gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         <Input
                           label="账单日"
                           type="number"
-                          value={formData.extra_config?.bill_date?.toString() || ''}
+                          value={formData.extra_config?.bill_day?.toString() || ''}
                           onChange={(e) => setFormData({
                             ...formData, 
-                            extra_config: { ...formData.extra_config, bill_date: parseInt(e.target.value) || undefined }
+                            extra_config: { ...formData.extra_config, bill_day: parseInt(e.target.value) || undefined }
                           })}
                           endContent={<span className="text-default-400 text-small">日</span>}
                         />
                         <Input
                           label="还款日"
                           type="number"
-                          value={formData.extra_config?.repayment_date?.toString() || ''}
+                          value={formData.extra_config?.repayment_day?.toString() || ''}
                           onChange={(e) => setFormData({
                             ...formData, 
-                            extra_config: { ...formData.extra_config, repayment_date: parseInt(e.target.value) || undefined }
+                            extra_config: { ...formData.extra_config, repayment_day: parseInt(e.target.value) || undefined }
                           })}
                           endContent={<span className="text-default-400 text-small">日</span>}
+                        />
+                        <Input
+                          label="信用额度"
+                          value={formData.extra_config?.credit_limit?.toString() || ''}
+                          onChange={(e) => setFormData({
+                            ...formData, 
+                            extra_config: { ...formData.extra_config, credit_limit: parseFloat(e.target.value) || undefined }
+                          })}
                         />
                       </div>
                     )}
@@ -685,38 +778,66 @@ function ProfilePage() {
                     {(formData.uiType === 'investment' || formData.uiType === 'margin') && (
                       <div className="grid grid-cols-2 gap-4">
                         <Input
+                          label="市场"
+                          value={formData.extra_config?.rules?.[0]?.market || ''}
+                          onChange={(e) => updateRuleField('market', e.target.value)}
+                        />
+                        <Input
+                          label="品种"
+                          value={formData.extra_config?.rules?.[0]?.type || ''}
+                          onChange={(e) => updateRuleField('type', e.target.value)}
+                        />
+                        <Input
                           label="佣金率"
-                          value={formData.extra_config?.commission_rate?.toString() || ''}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            extra_config: { ...formData.extra_config, commission_rate: parseFloat(e.target.value) || undefined }
-                          })}
+                          value={formData.extra_config?.rules?.[0]?.commission_rate?.toString() || ''}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value)
+                            updateRuleField('commission_rate', Number.isNaN(value) ? 0 : value)
+                          }}
+                        />
+                        <Input
+                          label="最低佣金"
+                          value={formData.extra_config?.rules?.[0]?.min_commission?.toString() || ''}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value)
+                            updateRuleField('min_commission', Number.isNaN(value) ? 0 : value)
+                          }}
                         />
                         <Input
                           label="印花税率"
-                          value={formData.extra_config?.stamp_duty_rate?.toString() || ''}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            extra_config: { ...formData.extra_config, stamp_duty_rate: parseFloat(e.target.value) || undefined }
-                          })}
+                          value={formData.extra_config?.rules?.[0]?.stamp_duty_rate?.toString() || ''}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value)
+                            updateRuleField('stamp_duty_rate', Number.isNaN(value) ? undefined : value)
+                          }}
                         />
                         <Input
                           label="过户费率"
-                          value={formData.extra_config?.transfer_fee_rate?.toString() || ''}
-                          onChange={(e) => setFormData({
-                            ...formData, 
-                            extra_config: { ...formData.extra_config, transfer_fee_rate: parseFloat(e.target.value) || undefined }
-                          })}
+                          value={formData.extra_config?.rules?.[0]?.transfer_fee_rate?.toString() || ''}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value)
+                            updateRuleField('transfer_fee_rate', Number.isNaN(value) ? undefined : value)
+                          }}
                         />
                         {formData.uiType === 'margin' && (
-                          <Input
-                            label="利率"
-                            value={formData.extra_config?.interest_rate?.toString() || ''}
-                            onChange={(e) => setFormData({
-                              ...formData, 
-                              extra_config: { ...formData.extra_config, interest_rate: parseFloat(e.target.value) || undefined }
-                            })}
-                          />
+                          <>
+                            <Input
+                              label="授信额度"
+                              value={formData.extra_config?.credit_limit?.toString() || ''}
+                              onChange={(e) => setFormData({
+                                ...formData, 
+                                extra_config: { ...formData.extra_config, credit_limit: parseFloat(e.target.value) || undefined }
+                              })}
+                            />
+                            <Input
+                              label="维持担保比例"
+                              value={formData.extra_config?.maintenance_ratio?.toString() || ''}
+                              onChange={(e) => setFormData({
+                                ...formData, 
+                                extra_config: { ...formData.extra_config, maintenance_ratio: parseFloat(e.target.value) || undefined }
+                              })}
+                            />
+                          </>
                         )}
                       </div>
                     )}

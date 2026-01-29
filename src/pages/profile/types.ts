@@ -12,15 +12,21 @@ export const UserWalletType = {
 
 export type UserWalletType = typeof UserWalletType[keyof typeof UserWalletType];
 
-export interface WalletExtraConfig {
-  // Credit Card
-  bill_date?: number;
-  repayment_date?: number;
-  // Investment & Margin
-  commission_rate?: number;
+export interface CommissionRule {
+  market?: string;
+  type?: string;
+  commission_rate: number;
+  min_commission: number;
   stamp_duty_rate?: number;
   transfer_fee_rate?: number;
-  interest_rate?: number; // Margin only
+}
+
+export interface WalletExtraConfig {
+  bill_day?: number;
+  repayment_day?: number;
+  credit_limit?: number;
+  maintenance_ratio?: number;
+  rules?: CommissionRule[];
 }
 
 export type AccountType = 'wechat' | 'alipay' | 'bank' | 'credit' | 'investment' | 'margin' | 'cash' | 'stored' | 'add';
