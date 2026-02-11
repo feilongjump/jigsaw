@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+
+/* Iconify */
+@plugin "@iconify/tailwind4";
+
+/* HeroUI */
+@plugin './hero.ts';
+/* Note: You may need to change the path to fit your project structure */
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary: #635bff;
+  --color-secondary: #006fee;
+  --color-primary-light: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  --color-light-gray: #f4f7fb;
+  --color-dark: #1f2a3d;
+  --color-dark-gray: #1a2537;
+}
+
+.page-wrapper {
+  @apply w-full ml-80 transition-all duration-200 ease-in;
+}
+
+.container {
+  @apply max-w-[1440px] mx-auto;
+}
+
+@media screen and (max-width: 1280px) {
+  .page-wrapper {
+    @apply ml-0;
+  }
+}

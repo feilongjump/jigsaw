@@ -1,0 +1,47 @@
+{
+  "name": "jigsaw",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@heroui/react": "^2.8.8",
+    "@iconify/react": "^6.0.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "^1.159.5",
+    "@tanstack/react-router-devtools": "^1.159.5",
+    "framer-motion": "^12.34.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.1.18",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.4.2",
+    "@eslint-react/eslint-plugin": "^2.12.4",
+    "@eslint/js": "^10.0.1",
+    "@iconify-json/solar": "^1.2.5",
+    "@iconify/tailwind4": "^1.2.1",
+    "@tanstack/router-plugin": "^1.159.5",
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.3",
+    "eslint": "^10.0.0",
+    "eslint-plugin-format": "^1.4.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.0",
+    "globals": "^17.3.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.55.0",
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+  }
+}
