@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .trae
 .tanstack
+.env*
+!.env.example
+
+docs

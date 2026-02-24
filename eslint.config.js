@@ -7,4 +7,9 @@ export default antfu({
   ignores: [
     'src/routeTree.gen.ts',
   ],
+}, {
+  files: ['src/pages/**/*.tsx'],
+  rules: {
+    'react-refresh/only-export-components': 'off',
+  },
 })

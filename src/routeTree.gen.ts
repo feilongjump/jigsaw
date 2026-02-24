@@ -11,8 +11,16 @@
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as SplatRouteImport } from './pages/$'
 import { Route as DashboardRouteRouteImport } from './pages/dashboard/route'
+import { Route as AuthRouteRouteImport } from './pages/auth/route'
 import { Route as IndexRouteImport } from './pages/index'
 import { Route as DashboardIndexRouteImport } from './pages/dashboard/index'
+import { Route as AuthSignUpRouteImport } from './pages/auth/sign-up'
+import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
+import { Route as AuthOtpRouteImport } from './pages/auth/otp'
+import { Route as AuthForgotPasswordRouteImport } from './pages/auth/forgot-password'
+import { Route as DashboardUserRouteRouteImport } from './pages/dashboard/user/route'
+import { Route as DashboardUserProfileRouteImport } from './pages/dashboard/user/profile'
+import { Route as DashboardUserListRouteImport } from './pages/dashboard/user/list'
 
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
@@ -22,6 +30,11 @@ const SplatRoute = SplatRouteImport.update({
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,35 +47,131 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthOtpRoute = AuthOtpRouteImport.update({
+  id: '/otp',
+  path: '/otp',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const DashboardUserRouteRoute = DashboardUserRouteRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardUserProfileRoute = DashboardUserProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardUserRouteRoute,
+} as any)
+const DashboardUserListRoute = DashboardUserListRouteImport.update({
+  id: '/list',
+  path: '/list',
+  getParentRoute: () => DashboardUserRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/user/list': typeof DashboardUserListRoute
+  '/dashboard/user/profile': typeof DashboardUserProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/user/list': typeof DashboardUserListRoute
+  '/dashboard/user/profile': typeof DashboardUserProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/otp': typeof AuthOtpRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/user/list': typeof DashboardUserListRoute
+  '/dashboard/user/profile': typeof DashboardUserProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/$' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/$'
+    | '/dashboard/user'
+    | '/auth/forgot-password'
+    | '/auth/otp'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/dashboard/'
+    | '/dashboard/user/list'
+    | '/dashboard/user/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/dashboard'
-  id: '__root__' | '/' | '/dashboard' | '/$' | '/dashboard/'
+  to:
+    | '/'
+    | '/auth'
+    | '/$'
+    | '/dashboard/user'
+    | '/auth/forgot-password'
+    | '/auth/otp'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/dashboard'
+    | '/dashboard/user/list'
+    | '/dashboard/user/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/$'
+    | '/dashboard/user'
+    | '/auth/forgot-password'
+    | '/auth/otp'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/dashboard/'
+    | '/dashboard/user/list'
+    | '/dashboard/user/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   SplatRoute: typeof SplatRoute
 }
@@ -83,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -97,14 +213,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/otp': {
+      id: '/auth/otp'
+      path: '/otp'
+      fullPath: '/auth/otp'
+      preLoaderRoute: typeof AuthOtpRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/dashboard/user': {
+      id: '/dashboard/user'
+      path: '/user'
+      fullPath: '/dashboard/user'
+      preLoaderRoute: typeof DashboardUserRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/user/profile': {
+      id: '/dashboard/user/profile'
+      path: '/profile'
+      fullPath: '/dashboard/user/profile'
+      preLoaderRoute: typeof DashboardUserProfileRouteImport
+      parentRoute: typeof DashboardUserRouteRoute
+    }
+    '/dashboard/user/list': {
+      id: '/dashboard/user/list'
+      path: '/list'
+      fullPath: '/dashboard/user/list'
+      preLoaderRoute: typeof DashboardUserListRouteImport
+      parentRoute: typeof DashboardUserRouteRoute
+    }
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthOtpRoute: typeof AuthOtpRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthOtpRoute: AuthOtpRoute,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface DashboardUserRouteRouteChildren {
+  DashboardUserListRoute: typeof DashboardUserListRoute
+  DashboardUserProfileRoute: typeof DashboardUserProfileRoute
+}
+
+const DashboardUserRouteRouteChildren: DashboardUserRouteRouteChildren = {
+  DashboardUserListRoute: DashboardUserListRoute,
+  DashboardUserProfileRoute: DashboardUserProfileRoute,
+}
+
+const DashboardUserRouteRouteWithChildren =
+  DashboardUserRouteRoute._addFileChildren(DashboardUserRouteRouteChildren)
+
 interface DashboardRouteRouteChildren {
+  DashboardUserRouteRoute: typeof DashboardUserRouteRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardUserRouteRoute: DashboardUserRouteRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -114,6 +312,7 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   SplatRoute: SplatRoute,
 }

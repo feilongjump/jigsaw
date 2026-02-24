@@ -87,10 +87,10 @@ export const SubMenuData: Record<string, { title: string, items: { key: string, 
   ],
   User: [
     {
-      title: 'User Management',
+      title: '用户管理',
       items: [
-        { key: 'profile', title: 'Profile', icon: 'icon-[solar--user-circle-line-duotone]', path: '/user/profile' },
-        { key: 'settings', title: 'Account Settings', icon: 'icon-[solar--settings-line-duotone]', path: '/user/settings' },
+        { key: 'list', title: '用户列表', icon: 'icon-[solar--users-group-two-rounded-line-duotone]', path: '/dashboard/user/list' },
+        { key: 'profile', title: '个人资料', icon: 'icon-[solar--user-circle-line-duotone]', path: '/dashboard/user/profile' },
       ],
     },
   ],

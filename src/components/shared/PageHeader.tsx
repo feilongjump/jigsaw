@@ -8,40 +8,32 @@ export function PageHeader() {
   const pathname = location.pathname
 
   const currentRoute = useMemo(() => {
-    // 扁平化菜单数据以查找当前项
-    for (const key in SubMenuData) {
-      const sections = SubMenuData[key]
-      for (const section of sections) {
-        for (const item of section.items) {
-          if (item.path === pathname || pathname.startsWith(`${item.path}/`)) {
-            // 简单匹配，如果可能的话优先精确匹配，但循环顺序很重要
-            // 因为我们在第一次匹配时返回，所以要小心。
-            // 但通常路径是不同的。
-            if (item.path === pathname) {
-              return {
-                title: item.title,
-                category: section.title,
-              }
+    let matchedTitle = ''
+    let matchedCategory = ''
+    let matchedLength = -1
+
+    Object.values(SubMenuData).forEach((sections) => {
+      sections.forEach((section) => {
+        section.items.forEach((item) => {
+          if (pathname === item.path || pathname.startsWith(`${item.path}/`)) {
+            if (item.path.length > matchedLength) {
+              matchedLength = item.path.length
+              matchedTitle = item.title
+              matchedCategory = section.title
             }
           }
-        }
-      }
+        })
+      })
+    })
+
+    if (!matchedTitle) {
+      return null
     }
-    // 如果精确匹配失败，则回退搜索部分匹配
-    for (const key in SubMenuData) {
-      const sections = SubMenuData[key]
-      for (const section of sections) {
-        for (const item of section.items) {
-          if (pathname.startsWith(item.path) && item.path !== '/') {
-            return {
-              title: item.title,
-              category: section.title,
-            }
-          }
-        }
-      }
+
+    return {
+      title: matchedTitle,
+      category: matchedCategory,
     }
-    return null
   }, [pathname])
 
   const title = currentRoute?.title || 'Dashboard'

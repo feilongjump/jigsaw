@@ -1,6 +1,6 @@
 import { Image, Tab, Tabs, Tooltip } from '@heroui/react'
 import { Link, useLocation } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { MenuItem, SubMenuData } from '@/config/menu'
 import { useSidebarStore } from '@/stores/useSidebarStore'
 import '@/styles/sidebar.css'
@@ -14,27 +14,45 @@ export interface SidebarContentProps {
 export function SidebarContent({ className, isDrawer, onNavigate }: SidebarContentProps) {
   const { activeKey, setActiveKey, isMenuOpen, toggleMenu } = useSidebarStore()
   const location = useLocation()
+  const manualOverrideRef = useRef(false)
+  const lastPathnameRef = useRef(location.pathname)
 
-  useEffect(() => {
-    // 仅同步路由状态（这里总是同步即可）
-    // 如果在抽屉模式下，我们可能需要在导航时关闭抽屉？
-    // 通常是的，但目前先保持简单。
+  const matchedKey = useMemo(() => {
     const pathname = location.pathname
+    let matchedKey = ''
+    let matchedLength = -1
 
-    const foundKey = Object.keys(SubMenuData).find((key) => {
-      const sections = SubMenuData[key]
-      return sections.some(section =>
-        section.items.some(item =>
-          pathname === item.path || pathname.startsWith(`${item.path}/`),
-        ),
-      )
+    Object.entries(SubMenuData).forEach(([key, sections]) => {
+      sections.forEach((section) => {
+        section.items.forEach((item) => {
+          if (pathname === item.path || pathname.startsWith(`${item.path}/`)) {
+            if (item.path.length > matchedLength) {
+              matchedLength = item.path.length
+              matchedKey = key
+            }
+          }
+        })
+      })
     })
 
-    if (foundKey && foundKey !== activeKey) {
-      setActiveKey(foundKey)
+    return matchedKey
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (location.pathname !== lastPathnameRef.current) {
+      lastPathnameRef.current = location.pathname
+      manualOverrideRef.current = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, setActiveKey])
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (manualOverrideRef.current) {
+      return
+    }
+    if (matchedKey && matchedKey !== activeKey) {
+      setActiveKey(matchedKey)
+    }
+  }, [matchedKey, setActiveKey, activeKey])
 
   const currentSubMenu = SubMenuData[activeKey] || []
 
@@ -47,7 +65,10 @@ export function SidebarContent({ className, isDrawer, onNavigate }: SidebarConte
         {/* 侧边栏 icon 菜单 */}
         <Tabs
           selectedKey={activeKey}
-          onSelectionChange={key => setActiveKey(key as string)}
+          onSelectionChange={(key) => {
+            manualOverrideRef.current = true
+            setActiveKey(key as string)
+          }}
           isVertical={true}
           color="primary"
           radius="lg"
