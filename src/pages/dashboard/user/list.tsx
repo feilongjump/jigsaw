@@ -121,12 +121,12 @@ function UserList() {
                   }
                 }}
               >
-                <span className="icon-[solar--pen-bold]" />
+                <span className="icon-[solar--pen-new-square-line-duotone]" />
               </span>
             </Tooltip>
             <Tooltip color="danger" content="禁止删除用户">
               <span className="cursor-not-allowed text-lg text-default-200">
-                <span className="icon-[solar--trash-bin-trash-bold]" />
+                <span className="icon-[solar--trash-bin-minimalistic-line-duotone]" />
               </span>
             </Tooltip>
           </div>
