@@ -19,8 +19,20 @@ import { Route as AuthSignInRouteImport } from './pages/auth/sign-in'
 import { Route as AuthOtpRouteImport } from './pages/auth/otp'
 import { Route as AuthForgotPasswordRouteImport } from './pages/auth/forgot-password'
 import { Route as DashboardUserRouteRouteImport } from './pages/dashboard/user/route'
+import { Route as DashboardPostsRouteRouteImport } from './pages/dashboard/posts/route'
+import { Route as DashboardLedgerRouteRouteImport } from './pages/dashboard/ledger/route'
 import { Route as DashboardUserProfileRouteImport } from './pages/dashboard/user/profile'
 import { Route as DashboardUserListRouteImport } from './pages/dashboard/user/list'
+import { Route as DashboardPostsTagsRouteImport } from './pages/dashboard/posts/tags'
+import { Route as DashboardPostsListRouteImport } from './pages/dashboard/posts/list'
+import { Route as DashboardPostsCreateRouteImport } from './pages/dashboard/posts/create'
+import { Route as DashboardLedgerWalletsRouteImport } from './pages/dashboard/ledger/wallets'
+import { Route as DashboardLedgerTransactionsRouteImport } from './pages/dashboard/ledger/transactions'
+import { Route as DashboardLedgerTagsRouteImport } from './pages/dashboard/ledger/tags'
+import { Route as DashboardLedgerOverviewRouteImport } from './pages/dashboard/ledger/overview'
+import { Route as DashboardLedgerCategoriesRouteImport } from './pages/dashboard/ledger/categories'
+import { Route as DashboardPostsEditRouteRouteImport } from './pages/dashboard/posts/edit/route'
+import { Route as DashboardPostsEditIdRouteImport } from './pages/dashboard/posts/edit/$id'
 
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
@@ -72,6 +84,16 @@ const DashboardUserRouteRoute = DashboardUserRouteRouteImport.update({
   path: '/user',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardPostsRouteRoute = DashboardPostsRouteRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardLedgerRouteRoute = DashboardLedgerRouteRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardUserProfileRoute = DashboardUserProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -82,33 +104,109 @@ const DashboardUserListRoute = DashboardUserListRouteImport.update({
   path: '/list',
   getParentRoute: () => DashboardUserRouteRoute,
 } as any)
+const DashboardPostsTagsRoute = DashboardPostsTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => DashboardPostsRouteRoute,
+} as any)
+const DashboardPostsListRoute = DashboardPostsListRouteImport.update({
+  id: '/list',
+  path: '/list',
+  getParentRoute: () => DashboardPostsRouteRoute,
+} as any)
+const DashboardPostsCreateRoute = DashboardPostsCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => DashboardPostsRouteRoute,
+} as any)
+const DashboardLedgerWalletsRoute = DashboardLedgerWalletsRouteImport.update({
+  id: '/wallets',
+  path: '/wallets',
+  getParentRoute: () => DashboardLedgerRouteRoute,
+} as any)
+const DashboardLedgerTransactionsRoute =
+  DashboardLedgerTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => DashboardLedgerRouteRoute,
+  } as any)
+const DashboardLedgerTagsRoute = DashboardLedgerTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => DashboardLedgerRouteRoute,
+} as any)
+const DashboardLedgerOverviewRoute = DashboardLedgerOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => DashboardLedgerRouteRoute,
+} as any)
+const DashboardLedgerCategoriesRoute =
+  DashboardLedgerCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => DashboardLedgerRouteRoute,
+  } as any)
+const DashboardPostsEditRouteRoute = DashboardPostsEditRouteRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => DashboardPostsRouteRoute,
+} as any)
+const DashboardPostsEditIdRoute = DashboardPostsEditIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => DashboardPostsEditRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/ledger': typeof DashboardLedgerRouteRouteWithChildren
+  '/dashboard/posts': typeof DashboardPostsRouteRouteWithChildren
   '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/posts/edit': typeof DashboardPostsEditRouteRouteWithChildren
+  '/dashboard/ledger/categories': typeof DashboardLedgerCategoriesRoute
+  '/dashboard/ledger/overview': typeof DashboardLedgerOverviewRoute
+  '/dashboard/ledger/tags': typeof DashboardLedgerTagsRoute
+  '/dashboard/ledger/transactions': typeof DashboardLedgerTransactionsRoute
+  '/dashboard/ledger/wallets': typeof DashboardLedgerWalletsRoute
+  '/dashboard/posts/create': typeof DashboardPostsCreateRoute
+  '/dashboard/posts/list': typeof DashboardPostsListRoute
+  '/dashboard/posts/tags': typeof DashboardPostsTagsRoute
   '/dashboard/user/list': typeof DashboardUserListRoute
   '/dashboard/user/profile': typeof DashboardUserProfileRoute
+  '/dashboard/posts/edit/$id': typeof DashboardPostsEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/ledger': typeof DashboardLedgerRouteRouteWithChildren
+  '/dashboard/posts': typeof DashboardPostsRouteRouteWithChildren
   '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/posts/edit': typeof DashboardPostsEditRouteRouteWithChildren
+  '/dashboard/ledger/categories': typeof DashboardLedgerCategoriesRoute
+  '/dashboard/ledger/overview': typeof DashboardLedgerOverviewRoute
+  '/dashboard/ledger/tags': typeof DashboardLedgerTagsRoute
+  '/dashboard/ledger/transactions': typeof DashboardLedgerTransactionsRoute
+  '/dashboard/ledger/wallets': typeof DashboardLedgerWalletsRoute
+  '/dashboard/posts/create': typeof DashboardPostsCreateRoute
+  '/dashboard/posts/list': typeof DashboardPostsListRoute
+  '/dashboard/posts/tags': typeof DashboardPostsTagsRoute
   '/dashboard/user/list': typeof DashboardUserListRoute
   '/dashboard/user/profile': typeof DashboardUserProfileRoute
+  '/dashboard/posts/edit/$id': typeof DashboardPostsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,14 +214,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/$': typeof SplatRoute
+  '/dashboard/ledger': typeof DashboardLedgerRouteRouteWithChildren
+  '/dashboard/posts': typeof DashboardPostsRouteRouteWithChildren
   '/dashboard/user': typeof DashboardUserRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/otp': typeof AuthOtpRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/posts/edit': typeof DashboardPostsEditRouteRouteWithChildren
+  '/dashboard/ledger/categories': typeof DashboardLedgerCategoriesRoute
+  '/dashboard/ledger/overview': typeof DashboardLedgerOverviewRoute
+  '/dashboard/ledger/tags': typeof DashboardLedgerTagsRoute
+  '/dashboard/ledger/transactions': typeof DashboardLedgerTransactionsRoute
+  '/dashboard/ledger/wallets': typeof DashboardLedgerWalletsRoute
+  '/dashboard/posts/create': typeof DashboardPostsCreateRoute
+  '/dashboard/posts/list': typeof DashboardPostsListRoute
+  '/dashboard/posts/tags': typeof DashboardPostsTagsRoute
   '/dashboard/user/list': typeof DashboardUserListRoute
   '/dashboard/user/profile': typeof DashboardUserProfileRoute
+  '/dashboard/posts/edit/$id': typeof DashboardPostsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,41 +242,77 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/$'
+    | '/dashboard/ledger'
+    | '/dashboard/posts'
     | '/dashboard/user'
     | '/auth/forgot-password'
     | '/auth/otp'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/dashboard/'
+    | '/dashboard/posts/edit'
+    | '/dashboard/ledger/categories'
+    | '/dashboard/ledger/overview'
+    | '/dashboard/ledger/tags'
+    | '/dashboard/ledger/transactions'
+    | '/dashboard/ledger/wallets'
+    | '/dashboard/posts/create'
+    | '/dashboard/posts/list'
+    | '/dashboard/posts/tags'
     | '/dashboard/user/list'
     | '/dashboard/user/profile'
+    | '/dashboard/posts/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/$'
+    | '/dashboard/ledger'
+    | '/dashboard/posts'
     | '/dashboard/user'
     | '/auth/forgot-password'
     | '/auth/otp'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/dashboard'
+    | '/dashboard/posts/edit'
+    | '/dashboard/ledger/categories'
+    | '/dashboard/ledger/overview'
+    | '/dashboard/ledger/tags'
+    | '/dashboard/ledger/transactions'
+    | '/dashboard/ledger/wallets'
+    | '/dashboard/posts/create'
+    | '/dashboard/posts/list'
+    | '/dashboard/posts/tags'
     | '/dashboard/user/list'
     | '/dashboard/user/profile'
+    | '/dashboard/posts/edit/$id'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/dashboard'
     | '/$'
+    | '/dashboard/ledger'
+    | '/dashboard/posts'
     | '/dashboard/user'
     | '/auth/forgot-password'
     | '/auth/otp'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/dashboard/'
+    | '/dashboard/posts/edit'
+    | '/dashboard/ledger/categories'
+    | '/dashboard/ledger/overview'
+    | '/dashboard/ledger/tags'
+    | '/dashboard/ledger/transactions'
+    | '/dashboard/ledger/wallets'
+    | '/dashboard/posts/create'
+    | '/dashboard/posts/list'
+    | '/dashboard/posts/tags'
     | '/dashboard/user/list'
     | '/dashboard/user/profile'
+    | '/dashboard/posts/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -248,6 +394,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardUserRouteRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/posts': {
+      id: '/dashboard/posts'
+      path: '/posts'
+      fullPath: '/dashboard/posts'
+      preLoaderRoute: typeof DashboardPostsRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/ledger': {
+      id: '/dashboard/ledger'
+      path: '/ledger'
+      fullPath: '/dashboard/ledger'
+      preLoaderRoute: typeof DashboardLedgerRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/user/profile': {
       id: '/dashboard/user/profile'
       path: '/profile'
@@ -261,6 +421,76 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/user/list'
       preLoaderRoute: typeof DashboardUserListRouteImport
       parentRoute: typeof DashboardUserRouteRoute
+    }
+    '/dashboard/posts/tags': {
+      id: '/dashboard/posts/tags'
+      path: '/tags'
+      fullPath: '/dashboard/posts/tags'
+      preLoaderRoute: typeof DashboardPostsTagsRouteImport
+      parentRoute: typeof DashboardPostsRouteRoute
+    }
+    '/dashboard/posts/list': {
+      id: '/dashboard/posts/list'
+      path: '/list'
+      fullPath: '/dashboard/posts/list'
+      preLoaderRoute: typeof DashboardPostsListRouteImport
+      parentRoute: typeof DashboardPostsRouteRoute
+    }
+    '/dashboard/posts/create': {
+      id: '/dashboard/posts/create'
+      path: '/create'
+      fullPath: '/dashboard/posts/create'
+      preLoaderRoute: typeof DashboardPostsCreateRouteImport
+      parentRoute: typeof DashboardPostsRouteRoute
+    }
+    '/dashboard/ledger/wallets': {
+      id: '/dashboard/ledger/wallets'
+      path: '/wallets'
+      fullPath: '/dashboard/ledger/wallets'
+      preLoaderRoute: typeof DashboardLedgerWalletsRouteImport
+      parentRoute: typeof DashboardLedgerRouteRoute
+    }
+    '/dashboard/ledger/transactions': {
+      id: '/dashboard/ledger/transactions'
+      path: '/transactions'
+      fullPath: '/dashboard/ledger/transactions'
+      preLoaderRoute: typeof DashboardLedgerTransactionsRouteImport
+      parentRoute: typeof DashboardLedgerRouteRoute
+    }
+    '/dashboard/ledger/tags': {
+      id: '/dashboard/ledger/tags'
+      path: '/tags'
+      fullPath: '/dashboard/ledger/tags'
+      preLoaderRoute: typeof DashboardLedgerTagsRouteImport
+      parentRoute: typeof DashboardLedgerRouteRoute
+    }
+    '/dashboard/ledger/overview': {
+      id: '/dashboard/ledger/overview'
+      path: '/overview'
+      fullPath: '/dashboard/ledger/overview'
+      preLoaderRoute: typeof DashboardLedgerOverviewRouteImport
+      parentRoute: typeof DashboardLedgerRouteRoute
+    }
+    '/dashboard/ledger/categories': {
+      id: '/dashboard/ledger/categories'
+      path: '/categories'
+      fullPath: '/dashboard/ledger/categories'
+      preLoaderRoute: typeof DashboardLedgerCategoriesRouteImport
+      parentRoute: typeof DashboardLedgerRouteRoute
+    }
+    '/dashboard/posts/edit': {
+      id: '/dashboard/posts/edit'
+      path: '/edit'
+      fullPath: '/dashboard/posts/edit'
+      preLoaderRoute: typeof DashboardPostsEditRouteRouteImport
+      parentRoute: typeof DashboardPostsRouteRoute
+    }
+    '/dashboard/posts/edit/$id': {
+      id: '/dashboard/posts/edit/$id'
+      path: '/$id'
+      fullPath: '/dashboard/posts/edit/$id'
+      preLoaderRoute: typeof DashboardPostsEditIdRouteImport
+      parentRoute: typeof DashboardPostsEditRouteRoute
     }
   }
 }
@@ -283,6 +513,56 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface DashboardLedgerRouteRouteChildren {
+  DashboardLedgerCategoriesRoute: typeof DashboardLedgerCategoriesRoute
+  DashboardLedgerOverviewRoute: typeof DashboardLedgerOverviewRoute
+  DashboardLedgerTagsRoute: typeof DashboardLedgerTagsRoute
+  DashboardLedgerTransactionsRoute: typeof DashboardLedgerTransactionsRoute
+  DashboardLedgerWalletsRoute: typeof DashboardLedgerWalletsRoute
+}
+
+const DashboardLedgerRouteRouteChildren: DashboardLedgerRouteRouteChildren = {
+  DashboardLedgerCategoriesRoute: DashboardLedgerCategoriesRoute,
+  DashboardLedgerOverviewRoute: DashboardLedgerOverviewRoute,
+  DashboardLedgerTagsRoute: DashboardLedgerTagsRoute,
+  DashboardLedgerTransactionsRoute: DashboardLedgerTransactionsRoute,
+  DashboardLedgerWalletsRoute: DashboardLedgerWalletsRoute,
+}
+
+const DashboardLedgerRouteRouteWithChildren =
+  DashboardLedgerRouteRoute._addFileChildren(DashboardLedgerRouteRouteChildren)
+
+interface DashboardPostsEditRouteRouteChildren {
+  DashboardPostsEditIdRoute: typeof DashboardPostsEditIdRoute
+}
+
+const DashboardPostsEditRouteRouteChildren: DashboardPostsEditRouteRouteChildren =
+  {
+    DashboardPostsEditIdRoute: DashboardPostsEditIdRoute,
+  }
+
+const DashboardPostsEditRouteRouteWithChildren =
+  DashboardPostsEditRouteRoute._addFileChildren(
+    DashboardPostsEditRouteRouteChildren,
+  )
+
+interface DashboardPostsRouteRouteChildren {
+  DashboardPostsEditRouteRoute: typeof DashboardPostsEditRouteRouteWithChildren
+  DashboardPostsCreateRoute: typeof DashboardPostsCreateRoute
+  DashboardPostsListRoute: typeof DashboardPostsListRoute
+  DashboardPostsTagsRoute: typeof DashboardPostsTagsRoute
+}
+
+const DashboardPostsRouteRouteChildren: DashboardPostsRouteRouteChildren = {
+  DashboardPostsEditRouteRoute: DashboardPostsEditRouteRouteWithChildren,
+  DashboardPostsCreateRoute: DashboardPostsCreateRoute,
+  DashboardPostsListRoute: DashboardPostsListRoute,
+  DashboardPostsTagsRoute: DashboardPostsTagsRoute,
+}
+
+const DashboardPostsRouteRouteWithChildren =
+  DashboardPostsRouteRoute._addFileChildren(DashboardPostsRouteRouteChildren)
+
 interface DashboardUserRouteRouteChildren {
   DashboardUserListRoute: typeof DashboardUserListRoute
   DashboardUserProfileRoute: typeof DashboardUserProfileRoute
@@ -297,11 +577,15 @@ const DashboardUserRouteRouteWithChildren =
   DashboardUserRouteRoute._addFileChildren(DashboardUserRouteRouteChildren)
 
 interface DashboardRouteRouteChildren {
+  DashboardLedgerRouteRoute: typeof DashboardLedgerRouteRouteWithChildren
+  DashboardPostsRouteRoute: typeof DashboardPostsRouteRouteWithChildren
   DashboardUserRouteRoute: typeof DashboardUserRouteRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardLedgerRouteRoute: DashboardLedgerRouteRouteWithChildren,
+  DashboardPostsRouteRoute: DashboardPostsRouteRouteWithChildren,
   DashboardUserRouteRoute: DashboardUserRouteRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
 }

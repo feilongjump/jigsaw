@@ -19,23 +19,29 @@ export function SidebarContent({ className, isDrawer, onNavigate }: SidebarConte
 
   const matchedKey = useMemo(() => {
     const pathname = location.pathname
-    let matchedKey = ''
+    let keyMatch = ''
     let matchedLength = -1
+
+    const isPathMatch = (path: string) => pathname === path || pathname.startsWith(`${path}/`)
 
     Object.entries(SubMenuData).forEach(([key, sections]) => {
       sections.forEach((section) => {
         section.items.forEach((item) => {
-          if (pathname === item.path || pathname.startsWith(`${item.path}/`)) {
-            if (item.path.length > matchedLength) {
-              matchedLength = item.path.length
-              matchedKey = key
-            }
+          if (isPathMatch(item.path) && item.path.length > matchedLength) {
+            matchedLength = item.path.length
+            keyMatch = key
           }
+          item.matchPaths?.forEach((matchPath) => {
+            if (isPathMatch(matchPath) && matchPath.length > matchedLength) {
+              matchedLength = matchPath.length
+              keyMatch = key
+            }
+          })
         })
       })
     })
 
-    return matchedKey
+    return keyMatch
   }, [location.pathname])
 
   useEffect(() => {
@@ -111,25 +117,24 @@ export function SidebarContent({ className, isDrawer, onNavigate }: SidebarConte
             <div key={section.title} className="mb-6">
               <h5 className="text-sm mb-2 text-default-500 font-medium px-3 uppercase tracking-wider">{section.title}</h5>
               <ul className="space-y-1">
-                {section.items.map(item => (
+                {section.items.map((item) => {
+                  const isPathMatch = (path: string) => location.pathname === path || location.pathname.startsWith(`${path}/`)
+                  const isActive = isPathMatch(item.path)
+                    || item.matchPaths?.some(matchPath => isPathMatch(matchPath))
+
+                  return (
                   <li key={item.key}>
                     <Link
                       to={item.path as any}
                       onClick={onNavigate}
-                      activeOptions={{ exact: true }}
-                      activeProps={{
-                        className: 'bg-primary text-white shadow-lg shadow-primary/20',
-                      }}
-                      inactiveProps={{
-                        className: 'text-default-600 hover:transform hover:translate-x-2 hover:bg-primary-light hover:text-primary',
-                      }}
-                      className="h-12 pl-3 rounded-xl flex gap-3 justify-start items-center cursor-pointer transition-all duration-200 ease-in-out"
+                      className={`h-12 pl-3 rounded-xl flex gap-3 justify-start items-center cursor-pointer transition-all duration-200 ease-in-out ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-default-600 hover:transform hover:translate-x-2 hover:bg-primary-light hover:text-primary'}`}
                     >
                       <span className={`${item.icon} w-6 h-6`} />
                       <span className="font-medium">{item.title}</span>
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             </div>
           ))}

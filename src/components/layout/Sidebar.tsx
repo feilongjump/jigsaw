@@ -22,7 +22,7 @@ export function Sidebar() {
 
   return (
     <>
-      <SidebarContent />
+      {isDesktop && <SidebarContent />}
       {!isDesktop && (
         <Drawer
           isOpen={isMenuOpen}

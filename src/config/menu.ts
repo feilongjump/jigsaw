@@ -1,13 +1,32 @@
-export const MenuItem = [
+export interface MenuItemConfig {
+  key: string
+  title: string
+  icon: string
+}
+
+export interface SubMenuItemConfig {
+  key: string
+  title: string
+  icon: string
+  path: string
+  matchPaths?: string[]
+}
+
+export interface SubMenuSectionConfig {
+  title: string
+  items: SubMenuItemConfig[]
+}
+
+export const MenuItem: MenuItemConfig[] = [
   {
     key: 'Dashboard',
     title: '仪表盘',
     icon: 'icon-[solar--star-rings-line-duotone]',
   },
   {
-    key: 'Bookmark',
-    title: '书签',
-    icon: 'icon-[solar--book-bookmark-line-duotone]',
+    key: 'Post',
+    title: '文章',
+    icon: 'icon-[solar--document-text-line-duotone]',
   },
   {
     key: 'Investment',
@@ -25,6 +44,11 @@ export const MenuItem = [
     icon: 'icon-[solar--point-on-map-line-duotone]',
   },
   {
+    key: 'Ledger',
+    title: '记账',
+    icon: 'icon-[solar--wallet-money-line-duotone]',
+  },
+  {
     key: 'User',
     title: '用户',
     icon: 'icon-[solar--user-hand-up-line-duotone]',
@@ -36,7 +60,7 @@ export const MenuItem = [
   },
 ]
 
-export const SubMenuData: Record<string, { title: string, items: { key: string, title: string, icon: string, path: string }[] }[]> = {
+export const SubMenuData: Record<string, SubMenuSectionConfig[]> = {
   Dashboard: [
     {
       title: '仪表盘',
@@ -46,15 +70,6 @@ export const SubMenuData: Record<string, { title: string, items: { key: string, 
         { key: 'ecommerce', title: '电商', icon: 'icon-[solar--cart-large-2-line-duotone]', path: '/dashboard/ecommerce' },
         { key: 'project', title: '项目', icon: 'icon-[solar--clipboard-list-line-duotone]', path: '/dashboard/project' },
         { key: 'crm', title: '客户管理', icon: 'icon-[solar--users-group-two-rounded-line-duotone]', path: '/dashboard/crm' },
-      ],
-    },
-  ],
-  Bookmark: [
-    {
-      title: 'Bookmark',
-      items: [
-        { key: 'all', title: 'All Bookmarks', icon: 'icon-[solar--bookmark-square-line-duotone]', path: '/bookmark/all' },
-        { key: 'favorites', title: 'Favorites', icon: 'icon-[solar--heart-line-duotone]', path: '/bookmark/favorites' },
       ],
     },
   ],
@@ -82,6 +97,28 @@ export const SubMenuData: Record<string, { title: string, items: { key: string, 
       items: [
         { key: 'google-map', title: 'Google Map', icon: 'icon-[solar--map-point-line-duotone]', path: '/map/google' },
         { key: 'vector-map', title: 'Vector Map', icon: 'icon-[solar--global-line-duotone]', path: '/map/vector' },
+      ],
+    },
+  ],
+  Ledger: [
+    {
+      title: '记账管理',
+      items: [
+        { key: 'overview', title: '概览', icon: 'icon-[solar--chart-square-line-duotone]', path: '/dashboard/ledger/overview' },
+        { key: 'wallets', title: '钱包', icon: 'icon-[solar--wallet-line-duotone]', path: '/dashboard/ledger/wallets' },
+        { key: 'transactions', title: '流水', icon: 'icon-[solar--bill-list-line-duotone]', path: '/dashboard/ledger/transactions' },
+        { key: 'categories', title: '分类', icon: 'icon-[solar--tag-line-duotone]', path: '/dashboard/ledger/categories' },
+        { key: 'tags', title: '标签', icon: 'icon-[solar--bookmark-circle-line-duotone]', path: '/dashboard/ledger/tags' },
+      ],
+    },
+  ],
+  Post: [
+    {
+      title: '文章管理',
+      items: [
+        { key: 'list', title: '文章列表', icon: 'icon-[solar--document-text-line-duotone]', path: '/dashboard/posts/list', matchPaths: ['/dashboard/posts/edit'] },
+        { key: 'create', title: '写文章', icon: 'icon-[solar--pen-new-square-line-duotone]', path: '/dashboard/posts/create' },
+        { key: 'tags', title: '文章标签', icon: 'icon-[solar--tag-line-duotone]', path: '/dashboard/posts/tags' },
       ],
     },
   ],

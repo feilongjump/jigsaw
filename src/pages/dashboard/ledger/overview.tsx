@@ -1,15 +1,12 @@
 import type { TransactionListResponse } from '@/types/ledger'
-import type { PostListResponse } from '@/types/post'
 import { Card, CardBody, CardHeader, Spinner } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { getTransactions, getWallets } from '@/api/ledger'
-import { getPosts } from '@/api/post'
-import { getCurrentUser } from '@/api/users'
 
-export const Route = createFileRoute('/dashboard/')({
-  component: Dashboard,
+export const Route = createFileRoute('/dashboard/ledger/overview')({
+  component: Overview,
 })
 
 function formatDate(date: Date) {
@@ -19,8 +16,7 @@ function formatDate(date: Date) {
   return `${year}-${month}-${day}`
 }
 
-export function Dashboard() {
-  const { data: user } = useQuery({ queryKey: ['currentUser'], queryFn: getCurrentUser })
+function Overview() {
   const { data: wallets, isLoading: isWalletsLoading } = useQuery({ queryKey: ['wallets'], queryFn: getWallets })
 
   const today = useMemo(() => new Date(), [])
@@ -29,7 +25,7 @@ export function Dashboard() {
   const monthStartDate = useMemo(() => formatDate(monthStart), [monthStart])
   const monthEndDate = useMemo(() => formatDate(today), [today])
 
-  const { data: recentTransactionsData, isLoading: isTransactionsLoading } = useQuery({
+  const { data: transactionsData, isLoading: isTransactionsLoading } = useQuery({
     queryKey: ['transactions', 'recent'],
     queryFn: () => getTransactions({ page: 1, page_size: 5 }),
   })
@@ -44,18 +40,13 @@ export function Dashboard() {
     }),
   })
 
-  const { data: recentPostsData, isLoading: isPostsLoading } = useQuery({
-    queryKey: ['posts', 'recent'],
-    queryFn: () => getPosts({ page: 1, page_size: 5 }),
-  })
-
   const recentTransactions = useMemo(() => {
-    if (!recentTransactionsData)
+    if (!transactionsData)
       return []
-    if (Array.isArray(recentTransactionsData))
-      return recentTransactionsData
-    return (recentTransactionsData as TransactionListResponse).list || []
-  }, [recentTransactionsData])
+    if (Array.isArray(transactionsData))
+      return transactionsData
+    return (transactionsData as TransactionListResponse).list || []
+  }, [transactionsData])
 
   const monthlyTransactions = useMemo(() => {
     if (!monthlyTransactionsData)
@@ -64,14 +55,6 @@ export function Dashboard() {
       return monthlyTransactionsData
     return (monthlyTransactionsData as TransactionListResponse).list || []
   }, [monthlyTransactionsData])
-
-  const recentPosts = useMemo(() => {
-    if (!recentPostsData)
-      return []
-    if (Array.isArray(recentPostsData))
-      return recentPostsData
-    return (recentPostsData as PostListResponse).list
-  }, [recentPostsData])
 
   const totalAssets = useMemo(() => {
     return wallets?.reduce((sum, wallet) => sum + wallet.balance, 0) || 0
@@ -89,23 +72,15 @@ export function Dashboard() {
       .reduce((sum, item) => sum + item.amount, 0)
   }, [monthlyTransactions])
 
-  if (isWalletsLoading || isTransactionsLoading || isMonthlyLoading || isPostsLoading) {
+  if (isWalletsLoading || isTransactionsLoading || isMonthlyLoading) {
     return <div className="flex justify-center p-10"><Spinner /></div>
   }
 
-  const displayName = user?.username || '用户'
-
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">仪表盘</h1>
-        <p className="text-small text-default-500 mt-1">
-          欢迎回来，
-          {displayName}
-        </p>
-      </div>
+      <h1 className="text-2xl font-bold">概览</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-primary text-white">
           <CardHeader className="flex-col items-start px-4 pb-0 pt-4">
             <p className="text-tiny font-bold uppercase opacity-70">总资产</p>
@@ -120,13 +95,6 @@ export function Dashboard() {
 
         <Card>
           <CardBody className="flex flex-col items-start justify-center gap-1">
-            <p className="text-tiny font-bold uppercase text-default-500">钱包数量</p>
-            <h4 className="text-3xl font-bold">{wallets?.length ?? 0}</h4>
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardBody className="flex flex-col items-start justify-center gap-1">
             <p className="text-tiny font-bold uppercase text-default-500">本月支出</p>
             <h4 className="text-3xl font-bold text-primary">
               ¥
@@ -134,7 +102,6 @@ export function Dashboard() {
             </h4>
           </CardBody>
         </Card>
-
         <Card>
           <CardBody className="flex flex-col items-start justify-center gap-1">
             <p className="text-tiny font-bold uppercase text-default-500">本月收入</p>
@@ -146,46 +113,29 @@ export function Dashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader className="pb-0">
-            <h2 className="text-lg font-bold">最近交易</h2>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-3">
-            {recentTransactions.map(item => (
-              <div key={item.id} className="flex items-center justify-between">
+      <div>
+        <h2 className="mb-4 text-xl font-bold">最近交易</h2>
+        <div className="flex flex-col gap-2">
+          {recentTransactions?.map(t => (
+            <Card key={t.id} className="w-full">
+              <CardBody className="flex flex-row items-center justify-between p-3">
                 <div className="flex flex-col">
-                  <span className="font-medium">{item.category?.name || item.remark || '无分类'}</span>
+                  <span className="font-medium">{t.category?.name || t.remark || '无分类'}</span>
                   <span className="text-tiny text-default-400">
-                    {new Date(item.transaction_date).toLocaleDateString()}
+                    {new Date(t.transaction_date).toLocaleDateString()}
                     {' '}
-                    {item.wallet?.name}
+                    {t.wallet?.name}
                   </span>
                 </div>
-                <span className={`font-semibold ${item.type === 'expense' ? 'text-primary' : item.type === 'income' ? 'text-danger' : item.type === 'transfer_out' ? 'text-warning' : 'text-success'}`}>
-                  {item.type === 'expense' || item.type === 'transfer_out' ? '-' : '+'}
-                  {item.amount.toFixed(2)}
-                </span>
-              </div>
-            ))}
-            {recentTransactions.length === 0 && <p className="text-default-500">暂无交易</p>}
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-0">
-            <h2 className="text-lg font-bold">最新文章</h2>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-3">
-            {recentPosts.map(post => (
-              <div key={post.id} className="flex flex-col gap-1">
-                <span className="font-medium">{post.title}</span>
-                <span className="text-tiny text-default-400">{new Date(post.created_at).toLocaleDateString()}</span>
-              </div>
-            ))}
-            {recentPosts.length === 0 && <p className="text-default-500">暂无文章</p>}
-          </CardBody>
-        </Card>
+                <div className={`font-bold ${t.type === 'expense' ? 'text-primary' : t.type === 'income' ? 'text-danger' : t.type === 'transfer_out' ? 'text-warning' : 'text-success'}`}>
+                  {t.type === 'expense' || t.type === 'transfer_out' ? '-' : '+'}
+                  {t.amount.toFixed(2)}
+                </div>
+              </CardBody>
+            </Card>
+          ))}
+          {(!recentTransactions || recentTransactions.length === 0) && <p className="text-default-500">暂无交易</p>}
+        </div>
       </div>
     </div>
   )
